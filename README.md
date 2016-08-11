@@ -1,7 +1,7 @@
 # Sumo Logic PowerShell SDK
 
-This is a cummunity-supported Windows PowerShell SDK (Cmdlets Module) to work with Sumo Logic [REST API](https://help.sumologic.com/APIs).
-It is fully free and fully open source. The license is Apache 2.0, meaning you are pretty much free to use it however you want in whatever way.
+This is a community-supported Windows PowerShell Module to work with the Sumo Logic [REST API](https://help.sumologic.com/APIs).
+It is free and open source, subject to the terms of the Apache 2.0 license.
 
 ## Getting Started
 
