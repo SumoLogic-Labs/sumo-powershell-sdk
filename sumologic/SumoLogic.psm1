@@ -2,7 +2,6 @@
 Add-Type -TypeDefinition @"
    public enum SumoDeployment
    {
-       Long,
        Prod,
        Sydney,
        Dublin,
@@ -24,7 +23,6 @@ $Script:defaultHeaders = @{
 }
 
 $Script:apiPoints = @{
-    [SumoDeployment]::Long = 'https://long-api.sumologic.net/api/v1/'
     [SumoDeployment]::Prod = 'https://api.sumologic.com/api/v1/'
     [SumoDeployment]::Sydney = 'https://api.au.sumologic.com/api/v1/'
     [SumoDeployment]::Dublin = 'https://api.eu.sumologic.com/api/v1/'
