@@ -1,13 +1,14 @@
 ﻿#Requires -RunAsAdministrator
 Param(
-    [SumoDeployment]$Deployment,
+    $Deployment,
     $AccessID,
     $AccessKey,
     $InstallFolder,
     $CollectorName,
-    $RunAs,
+    $RunAsUser,
+    $RunAsPassword,
     $SourceJson,
-    $Install4JParameters
+    $ExtraInstall4JParameters
 )
 
 Add-Type -TypeDefinition @"
@@ -56,7 +57,7 @@ function Get-Installer {
     $start_time = Get-Date
     Import-Module BitsTransfer
     Start-BitsTransfer -Source $url -Destination $output
-    Write-Host "Downloaded Sumo Logic Collector ($arch) from $Script:Deployment; taken $((Get-Date).Subtract($start_time).Seconds) second(s)."
+    Write-Information "Downloaded Sumo Logic Collector ($arch) from $Script:Deployment; taken $((Get-Date).Subtract($start_time).Seconds) second(s)."
     Get-Item "$env:temp\collector_installer.exe"
 }
 
@@ -69,7 +70,7 @@ function Read-Deployment {
         Try {
             $deploy = [SumoDeployment]$result
         } catch {
-            Write-Host 'Not a valid Input' -ForegroundColor Red
+            Write-Error 'Not a valid Input'
             $result = $null
         }
     }
@@ -90,7 +91,7 @@ function Read-AccessKey {
         $res = Invoke-WebRequest -Uri $url -Headers $Script:headers -Method Get -Credential $cred -SessionVariable webSession
         if (!$res -or ($res.StatusCode -ne 200)) {
             $retry += 1
-            Write-Host 'Authentication failed' -fore red
+            Write-Error 'Authentication failed'
         } else {
             $Script:AccessID = $accId
             $Script:AccessKey = $accKey
@@ -117,11 +118,13 @@ function Read-Parameter($name, $defaultValue) {
 if (!$InstallFolder) {
     Read-Parameter "InstallFolder" "$env:ProgramFiles\Sumo Logic Collector"
 }
-if  (!$CollectorName) {
+if (!$CollectorName) {
     Read-Parameter "CollectorName" $env:COMPUTERNAME
 }
 if (!$Deployment) {
     Read-Deployment
+} else {
+    $Script:Deployment = [SumoDeployment]$Deployment
 }
 if (!$AccessKey -or !$AccessID) {
     Read-AccessKey
@@ -134,8 +137,12 @@ $args = "-q", "-console", "-dir", """$InstallFolder""", "-Vsumo.accessid=$Access
 if ($SourceJson) {
     $args += "-Vsources=$SourceJson"
 }
-if ($RunAs) {
-    $args += "-Vsources=$RunAs"
+if ($RunAsUser -and $RunAsPassword) {
+    $args += "-VrunAs.username=$RunAsUser"
+    $args += "-VwinRunAs.password=$RunAsPassword"
+}
+if ($ExtraInstall4JParameters) {
+    $args += $ExtraInstall4JParameters
 }
 
 Start-Process -FilePath $Installer.FullName -ArgumentList $args -Wait
