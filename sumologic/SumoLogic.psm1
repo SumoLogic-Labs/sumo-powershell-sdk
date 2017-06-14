@@ -92,7 +92,7 @@ function invokeSumoWebRequest($session,
     } else {
         $url = $session.Endpoint + $function
         debugRest $url $method $headers $content
-        Invoke-WebRequest -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body (ConvertTo-Json $content)
+        Invoke-WebRequest -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body (ConvertTo-Json $content -Depth 10)
     }
 }
 
@@ -111,7 +111,7 @@ function invokeSumoRestMethod($session,
     } else {
         $url = $session.Endpoint + $function
         debugRest $url $method $headers $content
-        Invoke-RestMethod -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body (ConvertTo-Json $content)
+        Invoke-RestMethod -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body (ConvertTo-Json $content -Depth 10)
     }
 }
 
