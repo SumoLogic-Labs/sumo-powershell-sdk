@@ -31,6 +31,14 @@ $Script:apiPoints = @{
 
 $Script:sumoSesion = $null
 
+# TLS 1.1+ is not enabled by default in Windows PowerShell, but it is
+# required to communicate with the Sumo Logic API service.
+# Enable it if needed
+if ([System.Net.ServicePointManager]::SecurityProtocol -ne [System.Net.SecurityProtocolType]::SystemDefault) {
+    Write-Warning "Enabling TLS 1.2 usage via [System.Net.ServicePointManager]::SecurityProtocol"
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
+}
+
 #### Private Helpers #####################################################################################################
 
 function getSession($endpoint, $webSession) {
