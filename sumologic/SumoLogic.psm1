@@ -273,7 +273,7 @@ function Set-Collector {
             $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$Id"
             $etag = $org.Headers.ETag
             $headers = @{
-                "If-Match" = $etag
+                "If-Match" = $etag[0]
                 'content-type' = 'application/json'
                 'accept' = 'application/json'
             }
@@ -366,7 +366,7 @@ function Set-Source {
         $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$collectorId/sources/$sourceId"
         $etag = $org.Headers.ETag
         $headers = @{
-            "If-Match" = $etag
+            "If-Match" = $etag[0]
             'content-type' = 'application/json'
             'accept' = 'application/json'
         }
