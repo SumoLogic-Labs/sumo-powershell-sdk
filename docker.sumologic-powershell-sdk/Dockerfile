@@ -5,7 +5,7 @@ ENV SUMO_DEPLOYMENT=US2
 ENV SUMO_SESSION=true
 
 # print out some demo info about the connection
-ENV DEMO=true
+ENV SHOW_CONNECTION_INFO=false
 
 #   a demo script to try out.
 # This is also a simple way you could add a stuff to execute to a container yourself.
