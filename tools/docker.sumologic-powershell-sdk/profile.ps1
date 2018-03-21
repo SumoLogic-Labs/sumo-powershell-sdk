@@ -1,6 +1,6 @@
 Import-Module ./SumoLogic.psm1
 
-if ($env:SHOW_CONNECTION_INFO -eq $true) {
+if ($Env:SHOW_CONNECTION_INFO -eq $true) {
     write-host "Available commands in sumologic loaded module are:"
     get-command -Module Sumologic
 }
@@ -23,7 +23,7 @@ if ($Env:SUMO_SESSION) {
             write-host "$hint`n$ErrorMessage`n$FailedItem"; exit 4
         }
 
-        if ($env:SHOW_CONNECTION_INFO -eq $true) {
+        if ($Env:SHOW_CONNECTION_INFO -eq $true) {
             write-host "Connected to $($session.endpoint)"
         }
     }
