@@ -5,7 +5,7 @@ if ($Env:SHOW_CONNECTION_INFO -eq $true) {
     get-command -Module Sumologic
 }
 
-if ($Env:SUMO_SESSION) {
+if ($Env:SUMO_SESSION -eq $true ) {
     if (!$Env:SUMO_DEPLOYMENT -or !$Env:SUMO_ACCESS_ID -or !$Env:SUMO_ACCESS_KEY  ) { 
         Write-Error "ERROR! SUMO_SESSION is set but you must set SUMO_DEPLOYMENT,SUMO_ACCESS_KEY and SUMO_ACCESS_KEY to run `nNew-SumoSession -Deployment `$Env:SUMO_DEPLOYMENT -AccessId `$Env:SUMO_ACCESS_ID -AccessKey `$Env:SUMO_ACCESS_KEY `nYou will need to make your own New-SumoSession" ; 
        
