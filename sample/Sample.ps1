@@ -8,7 +8,7 @@ Get-Credential | New-SumoSession -Deployment Prod
 # Create session by giving access id and key in code
 # $session = New-SumoSession -Deployment Prod -AccessId "xxxxxxxxx" -AccessKey 'yyyyyyyyyyyyyyyyyyyuyuu'
 
-# Get all collectors
+# Get all collectors (If you have more than 1000 you must use -Offset syntax to get all of them!)
 Get-Collector
 
 # Get all collectors by page
@@ -49,4 +49,26 @@ Start-SearchJob -Query "*exception*" -Last ([TimeSpan]::FromHours(1)) | Get-Sear
 
 # search formatted exceptions and count the number with groups 
 Start-SearchJob -Query '*exception* | timeslice 1h | split _raw delim='' '' extract _, _, _, level, _, host | count group level, host' | Get-SearchResult -Type Record
+
+# extra filtering by collector properties
+
+# filter for Hosted or Installable collector types only
+Get-Collector -Limit 10000 -Offset 0 -Verbose -collectorType Installable 
+Get-Collector -ByName -NamePattern 'sometext' -Verbose -collectorType Hosted 
+
+# filter by JSON sync mode or not
+Get-Collector -limit 10000 -Offset 0 -sourceSyncMode UI -Verbose  
+Get-Collector -ByName -NamePattern 'sometext' -sourceSyncMode JSON 
+
+# Filtering Using FilterProperties
+# other types of filtering can be achieved this way by passing a hash of properties
+
+# turn on -verbose to get some info about if filtering is working as expected
+Get-Collector -ByName -NamePattern 'sometext' -FilterProperties @{"ephemeral" = $false} -Verbose
+
+# agents that are not reporting to sumo
+Get-Collector -limit 10000 -Offset 0 -FilterProperties @{ "alive" = $false }  
+
+# you can include multiple FilterProperties at onceß
+Get-Collector -limit 10000 -Offset 0 -FilterProperties @{ "sourceSyncMode" = "UI"; "alive" = $false; "ephemeral" = $false }
 

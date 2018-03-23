@@ -234,7 +234,14 @@ function Get-Collector {
     [parameter(ParameterSetName = "ByPage", Mandatory = $true)]
     [int]$Offset,
     [parameter(ParameterSetName = "ByPage", Mandatory = $true)]
-    [int]$Limit
+    [int]$Limit,
+
+    # simple filtering params. These are applied optionally on top of parameterset ById,ByName etc
+    [parameter(Mandatory = $false)][String][ValidateSet("Json", "UI")] $sourceSyncMode,
+    [parameter(Mandatory = $false)][string][ValidateSet("Hosted", "Installable")] $collectorType,
+
+    # fiter by a one or more other properties supplied as a hashtable
+    [parameter(Mandatory = $false)] [Hashtable]$FilterProperties 
     )
     process {
         switch ($PSCmdlet.ParameterSetName) {
@@ -256,6 +263,30 @@ function Get-Collector {
                 $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors" -content $body).collectors
             }
         }
+
+        Write-Verbose "Returned $($ret.Count) collectors before filtering"
+
+        if ($sourceSyncMode) {
+            Write-Verbose "filter on sourceSyncMode -eq $sourceSyncMode"
+            $ret = $ret | Where-Object { $_.sourceSyncMode -eq $sourceSyncMode }
+        }
+
+        if ($collectorType) {
+            Write-Verbose "filter on collectorType -eq $collectorType"
+            $ret = $ret | Where-Object { $_.collectorType -eq $collectorType }
+        }
+
+        if ($FilterProperties ) {
+            
+            foreach ($key in $FilterProperties.Keys) {
+                Write-Verbose "filter on FilterProperties property: $key -eq $($FilterProperties[$key]) "
+                $ret = $ret | Where-Object { $_.$key -eq $FilterProperties[$key] }
+            }
+            
+        }
+        
+        Write-Verbose "There are $($ret.Count) collectors after filtering"
+
         $ret
     }
 }
