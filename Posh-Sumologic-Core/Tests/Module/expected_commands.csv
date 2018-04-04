@@ -1,0 +1,10 @@
+Name
+Get-Collector
+Get-SearchResult
+Get-Source
+New-SumoSession
+Remove-Collector
+Remove-Source
+Set-Collector
+Set-Source
+Start-SearchJob

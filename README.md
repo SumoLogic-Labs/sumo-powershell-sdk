@@ -13,14 +13,12 @@ Create an access Id/Key pair following this [instruction](https://help.sumologic
 Record the access Id/Key; they will be used to authenticate to Sumo Logic web service when creating session.
 
 ### 2. Install Cmdlet module to your machine
-Following this [instruction](https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx) to install PowerShell Module files under `sumologic` to your machine. 
+Following this [instruction](https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx) to install PowerShell Module files under `Posh-Sumologic-Core` to your machine.
 <br />
 __NOTE__: This module requires PowerShell 3.0 or higher to work.
 
 ### 3. Run samples
-Launch `Sample.ps1` under `sample` folder and try some examples 
+Launch `Sample.ps1` under `sample` folder and try some examples
 
 ## Issues and Feature Request
 Report any issue or idea through [Git Hub](https://github.com/SumoLogic/sumo-powershell-sdk)
-
-

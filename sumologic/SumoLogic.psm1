@@ -74,7 +74,7 @@ function encodeUrl($url) {
 }
 
 function decodeUrl($url) {
-    [System.Web.HttpUtility]::UrlDecode($url) 
+    [System.Web.HttpUtility]::UrlDecode($url)
 }
 
 function getQueryString($form) {
@@ -85,10 +85,10 @@ function getQueryString($form) {
     $ret
 }
 
-function invokeSumoWebRequest($session, 
-    [System.Collections.IDictionary]$headers = $Script:defaultHeaders, 
-    [Microsoft.PowerShell.Commands.WebRequestMethod]$method, 
-    $function, 
+function invokeSumoWebRequest($session,
+    [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
+    [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
+    $function,
     $content) {
     $url = $session.Endpoint + $function
     if ($Method -eq 'Get') {
@@ -104,10 +104,10 @@ function invokeSumoWebRequest($session,
     }
 }
 
-function invokeSumoRestMethod($session, 
-    [System.Collections.IDictionary]$headers = $Script:defaultHeaders, 
-    [Microsoft.PowerShell.Commands.WebRequestMethod]$method, 
-    $function, 
+function invokeSumoRestMethod($session,
+    [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
+    [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
+    $function,
     $content) {
     $url = $session.Endpoint + $function
     if ($Method -eq 'Get') {
@@ -147,7 +147,7 @@ function getMessageResult ($Session, $Id, $Limit) {
     $ret = @()
     $page = 100
     $offset = 0
-    $type = "messages"   
+    $type = "messages"
     while ($offset -le $total) {
         $func = "search/jobs/{0}/{1}?offset={2}&limit={3}" -f $Id, $type, $offset, $page
         $res = invokeSumoRestMethod -session $Session -method Get -function $func
@@ -238,13 +238,13 @@ function Get-Collector {
     )
     process {
         switch ($PSCmdlet.ParameterSetName) {
-            "ById" { 
+            "ById" {
                 if (-not ($Id)) {
                     $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors
                 } else {
                     $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$Id").collector
                 }
-            } 
+            }
             "ByName" {
                 $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors | where { $_.name -match [regex]$NamePattern }
             }
@@ -340,7 +340,7 @@ function Get-Source {
                     }
                     $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources" -content $body).sources
                 }
-    
+
             }
             if ($ret) {
                 $ret | ForEach-Object {
@@ -445,7 +445,7 @@ function Start-SearchJob {
     }
     $job
 }
-    
+
 function Get-SearchResult {
     [CmdletBinding()]
     param(
