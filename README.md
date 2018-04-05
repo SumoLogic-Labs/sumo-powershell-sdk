@@ -20,6 +20,22 @@ __NOTE__: This module requires PowerShell 3.0 or higher to work.
 ### 3. Run samples
 Launch `Sample.ps1` under `sample` folder and try some examples 
 
+### 4. Get-Collector For Accounts Over 1000 Collectors
+Results returned from the SumoLogic collector API default to a 1000 limit. 
+This means if you have more than 1000 collectors you need to use -Limit and -Offset arguments or you will get incomplete results.
+
+For example say we more than 1000 collectors, and several hundred collectors with 'test' in the name property. The code below demonstrates how adding -Limit and -Offset will fix the problem that the default limit 1000 returns an incomplete result set.
+
+```
+# This returns 56 results - ONLY the collectors matching test from the first 1000 returned by the API.
+(Get-collector | where {$_.name -match 'test' } ).count
+56
+
+# Now setting a limit of 10000 we get the complete result set of 219 matching string 'test' by name
+(Get-collector -Limit 10000 -Offset 0  | where {$_.name -match 'test' } ).count                                                219
+
+ ```
+
 ## Issues and Feature Request
 Report any issue or idea through [Git Hub](https://github.com/SumoLogic/sumo-powershell-sdk)
 
