@@ -8,10 +8,11 @@ Get-Credential | New-SumoSession -Deployment Prod
 # Create session by giving access id and key in code
 # $session = New-SumoSession -Deployment Prod -AccessId "xxxxxxxxx" -AccessKey 'yyyyyyyyyyyyyyyyyyyuyuu'
 
-# Get all collectors (If you have more than 1000 you must use -Offset syntax to get all of them!)
+# Get all collectors 
 Get-Collector
 
 # Get all collectors by page
+# If you have more than 1000 you must use -Limit and -Offset to get complete results!
 Get-Collector -Offset 3 -Limit 5
 
 # Get collector by Id
@@ -50,13 +51,17 @@ Start-SearchJob -Query "*exception*" -Last ([TimeSpan]::FromHours(1)) | Get-Sear
 # search formatted exceptions and count the number with groups 
 Start-SearchJob -Query '*exception* | timeslice 1h | split _raw delim='' '' extract _, _, _, level, _, host | count group level, host' | Get-SearchResult -Type Record
 
-# extra filtering by collector properties
+# Filtering Get-Collector results using other properties
 
 # filter for Hosted or Installable collector types only
-Get-Collector -Limit 10000 -Offset 0 -Verbose -collectorType Installable 
+Get-Collector -collectorType Installable 
 Get-Collector -ByName -NamePattern 'sometext' -Verbose -collectorType Hosted 
 
+# for more than 1000 collectors you must add -Limit greater than your total collector count or you might get incomplete results.
+Get-Collector -Limit 10000 -Offset 0 -collectorType Installable -Verbose
+
 # filter by JSON sync mode or not
+Get-Collector -sourceSyncMode UI -Verbose  
 Get-Collector -limit 10000 -Offset 0 -sourceSyncMode UI -Verbose  
 Get-Collector -ByName -NamePattern 'sometext' -sourceSyncMode JSON 
 
@@ -69,6 +74,6 @@ Get-Collector -ByName -NamePattern 'sometext' -FilterProperties @{"ephemeral" = 
 # agents that are not reporting to sumo
 Get-Collector -limit 10000 -Offset 0 -FilterProperties @{ "alive" = $false }  
 
-# you can include multiple FilterProperties at onceß
+# you can include multiple FilterProperties at once
 Get-Collector -limit 10000 -Offset 0 -FilterProperties @{ "sourceSyncMode" = "UI"; "alive" = $false; "ephemeral" = $false }
 
