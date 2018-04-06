@@ -25,7 +25,7 @@ CompanyName = 'SumoLogic'
 Copyright = 'SumoLogic(C) 2016'
 
 # Description of the functionality provided by this module
-Description = 'Sumologic Posh Module'
+Description = 'Sumologic Posh Module.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -103,10 +103,10 @@ PrivateData = @{
         # Tags = @()
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/SumoLogic/sumo-powershell-sdk'
 
         # A URL to an icon representing this module.
         # IconUri = ''

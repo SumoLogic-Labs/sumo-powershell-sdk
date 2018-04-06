@@ -6,7 +6,7 @@ Download module -> run Posh-Sumologic-Core.sandbox.ps1 to load.
 
 ## Install via PowershellLibrary
 ```powershell
-PowerShellGet\Install-Module Posh-SumologicCore -Scope CurrentUser
+PowerShellGet\Install-Module Posh-Sumologic-Core -Scope CurrentUser
 ```
 
 ## cmdlets
