@@ -1,3 +1,4 @@
+. $PSScriptRoot/Global.ps1
 
 $scriptSources = Get-ChildItem -Path $ModuleRoot -Filter '*.ps1' -Recurse
 Import-Module PSScriptAnalyzer

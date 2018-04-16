@@ -10,8 +10,6 @@
 function New-SumoSession {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact="Low")]
   param(
-    [parameter(Mandatory = $true, Position = 0)]
-    [SumoDeployment]$Deployment,
     [parameter(ParameterSetName = "ByPSCredential", Mandatory = $true, ValueFromPipeline = $true)]
     [PSCredential]$Credential,
     [parameter(ParameterSetName = "ByAccessKey", Mandatory = $true)]
@@ -20,25 +18,24 @@ function New-SumoSession {
     [string]$AccessKey,
     [switch]$ForceUpdate = $false
   )
+  begin {
+    # TLS 1.1+ is not enabled by default in Windows PowerShell, but it is
+    # required to communicate with the Sumo Logic API service.
+    # Enable it if needed
+    if ([System.Net.ServicePointManager]::SecurityProtocol -ne [System.Net.SecurityProtocolType]::SystemDefault) {
+      Write-Warning "Enabling TLS 1.2 usage via [System.Net.ServicePointManager]::SecurityProtocol"
+      [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
+    }
+  }
   process {
-    $endpoint = $Script:apiPoints[$Deployment]
     if ("ByAccessKey" -eq $PSCmdlet.ParameterSetName) {
       $secpasswd = ConvertTo-SecureString $AccessKey -AsPlainText -Force
       $Credential = New-Object System.Management.Automation.PSCredential ($AccessId, $secpasswd)
     }
-    $url = $endpoint + "collectors?offset=0&limit=1"
-    $res = Invoke-WebRequest -Uri $url -Headers $Script:headers -Method Get `
-      -Credential $Credential -SessionVariable webSession
-    if ($res.StatusCode -eq 200) {
-      $session = getSession $endpoint $webSession $res
-      $session
-    }
-    else {
-      $null
-    }
+    $session = getSession $Credential
   }
   end {
-    if ($ForceUpdate -or $PSCmdlet.ShouldProcess("The default session will be overwritten, continue?")) {
+    if ($session -and ($ForceUpdate -or $PSCmdlet.ShouldProcess("The default connection in current session will be updated. Continue?"))) {
       $Script:sumoSession = $session
     }
   }

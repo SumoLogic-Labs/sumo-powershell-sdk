@@ -16,12 +16,7 @@ function Get-SearchResult {
     [SumoSearchResultType]$Type = [SumoSearchResultType]::Message,
     [int]$Limit
   )
-  switch ($Type) {
-    "Message" {
-      getMessageResult $Session $Id $Limit
-    }
-    "Record" {
-      getRecordResult $Session $Id $Limit
-    }
-  }
+
+  getSearchResult $Session $Id $Limit $Type
+
 }
