@@ -54,7 +54,9 @@
   # RequiredModules = @()
 
   # Assemblies that must be loaded prior to importing this module
-  # RequiredAssemblies = @()
+  RequiredAssemblies = @(
+    'Microsoft.PowerShell.Commands.Utility.dll'
+  )
 
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
   # ScriptsToProcess = @()
@@ -66,7 +68,17 @@
   # FormatsToProcess = @()
 
   # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-  # NestedModules = @()
+  NestedModules = @(
+    'CollectorManagement/Get-Collector.ps1'
+    'CollectorManagement/Get-Source.ps1'
+    'CollectorManagement/Remove-Collector.ps1'
+    'CollectorManagement/Remove-Source.ps1'
+    'CollectorManagement/Set-Collector.ps1'
+    'CollectorManagement/Set-Source.ps1'
+    'Common/New-SumoSession.ps1'
+    'SearchJob/Get-SearchResult.ps1'
+    'SearchJob/Start-SearchJob.ps1'
+  )
 
   # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
   FunctionsToExport = @(
