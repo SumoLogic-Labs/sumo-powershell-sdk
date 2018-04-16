@@ -1,3 +1,5 @@
+. $PSScriptRoot/Global.ps1
+
 $exportedCommands = (Get-Command -Module $ModuleName)
 
 Describe "$($ModuleName) Module" {
@@ -11,7 +13,7 @@ Describe "$($ModuleName) Module" {
 
   Foreach ($command in $exportedCommands) {
     Context $command {
-      It 'should have proper help' {
+      It "should have proper help" {
         $help = Get-Help $command.Name
         $help.description | Should Not BeNullOrEmpty
         $help.Synopsis | Should Not BeNullOrEmpty
