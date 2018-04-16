@@ -20,7 +20,7 @@ function Remove-Source {
   )
   process {
     $SourcId | ForEach-Object {
-      if ($Force -or $pscmdlet.ShouldProcess("Collector[$CollectorId] Source[$_]")) {
+      if ($Force -or $pscmdlet.ShouldProcess("Source[$_] in Collector[$CollectorId] will be removed. Continue?")) {
         invokeSumoRestMethod -session $Session -method Delete -function "collectors/$CollectorId/sources/$_"
       }
     }

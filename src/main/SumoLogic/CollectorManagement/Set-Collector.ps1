@@ -28,11 +28,11 @@ function Set-Collector {
       }
       $target = ConvertFrom-Json $org.Content
       $target.collector = $_
-      if ($Force -or $PSCmdlet.ShouldProcess("Will update the collector $($target.collector.name), continue?")) {
+      if ($Force -or $PSCmdlet.ShouldProcess("Collector[$Id] will be updated. Continue?")) {
         $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$Id" -content $target
       }
       if ($res -and $Passthru) {
-        ($res.collector)
+        $res.collector
       }
     }
   }
