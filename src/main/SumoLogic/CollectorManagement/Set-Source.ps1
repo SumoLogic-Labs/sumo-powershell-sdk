@@ -28,7 +28,7 @@ function Set-Source {
     }
     $target = ConvertFrom-Json $org.Content
     $target.source = $Source
-    if ($Force -or $PSCmdlet.ShouldProcess("Will update the source $($target.source.name), continue?")) {
+    if ($Force -or $PSCmdlet.ShouldProcess("Source[$sourceId] in Collector[$collectorId] will be removed. Continue?")) {
       $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$collectorId/sources/$sourceId" -content $target
     }
     if ($res -and $Passthru) {
