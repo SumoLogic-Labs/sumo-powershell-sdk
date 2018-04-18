@@ -10,7 +10,7 @@
 function Get-Collector {
   [CmdletBinding(DefaultParameterSetName = "ById")]
   param(
-    $Session = $Script:sumoSession,
+    [SumoAPISession]$Session = $sumoSession,
     [parameter(ParameterSetName = "ById", Position = 0)]
     [long]$Id,
     [parameter(ParameterSetName = "ByName")]
@@ -34,11 +34,11 @@ function Get-Collector {
         $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors | Where-Object { $_.name -match [regex]$NamePattern }
       }
       "ByPage" {
-        $body = @{
+        $query = @{
           'offset' = $Offset
           'limit'  = $Limit
         }
-        $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors" -content $body).collectors
+        $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors" -query $query).collectors
       }
     }
     $ret

@@ -8,6 +8,40 @@ function convertFromJson($json) {
   $hashtable
 }
 
+function compareObjectProperties($lhs, $rhs, $props) {
+  foreach ($prop in $props) {
+    $lhsProp = $lhs.PSObject.Properties | Where-Object { $_.Name -eq $prop }
+    $rhsProp = $rhs.PSObject.Properties | Where-Object { $_.Name -eq $prop }
+    if (!$lhsProp -and !$rhsProp) {
+    } elseif (!$lhsProp) {
+      New-Object -TypeName psobject -Property @{
+        "Property" = $prop
+        "Left" = $null
+        "Right" = "$($rhsProp[0].Value)"
+      }
+    } elseif (!$rhsProp) {
+      New-Object -TypeName psobject -Property @{
+        "Property" = $prop
+        "Left" = "$($lhsProp[0].Value)"
+        "Right" = $null
+      }
+    } elseif ($lhsProp[0].Value -ne $rhsProp[0].Value) {
+      New-Object -TypeName psobject -Property @{
+        "Property" = $prop
+        "Left" = "$($lhsProp[0].Value)"
+        "Right" = "$($rhsProp[0].Value)"
+      }
+    }
+  }
+}
+
+Function comparePSObjects($lhs, $rhs) {
+  $props = $lhs.PSObject.Properties | ForEach-Object Name
+  $props += $rhs.PSObject.Properties | ForEach-Object Name
+  $props = $props | Sort-Object | Select-Object -Unique
+  compareObjectProperties $lhs $rhs $props
+}
+
 function mockHttpCmdlet {
   Param(
     $Uri,
@@ -108,38 +142,39 @@ Describe "getDotNetDateTime" {
 }
 
 Describe "invokeSumoAPI" {
-  $session = New-Object -TypeName SumoAPISession -Property @{ Endpoint = "https://localhost/"; WebSession = $null }
+  $session = [SumoAPISession]::new("https://localhost/",$null)
   $headers = @{
     "content-type" = "application/json"
     "accept"       = "application/text"
   }
-  $payload = @{
+  $query = @{
     "a" = "x"
     "b" = "y"
     "c" = "&S<>"
   }
   
-  It "should call cmdlet with query string if in Get method" {
-    $res = invokeSumoAPI -session $session -headers $headers -method Get -function "foo/bar" -content $payload -cmdlet (Get-Command mockHttpCmdlet)
+  It "should call cmdlet with query string" {
+    $res = invokeSumoAPI -session $session -headers $headers -method Get -function "foo/bar" -query $query -cmdlet (Get-Command mockHttpCmdlet)
     $res | Should Not Be BeNullOrEmpty
     $res.Headers | Should Be $headers
     $res.Method | Should Be "Get"
     $res.Uri | Should Be "https://localhost/foo/bar?a=x&b=y&c=%26S%3c%3e"
   }
 
-  It "should call Invoke-WebRequest with payload if in Post method" {
-    $res = invokeSumoAPI -session $session -headers $headers -method Post -function "foo/bar" -content $payload -cmdlet (Get-Command mockHttpCmdlet)
+  It "should call Invoke-WebRequest with payload" {
+    $body = ConvertTo-Json (New-Object -TypeName psobject @{ "collector" = "my collector" })
+    $res = invokeSumoAPI -session $session -headers $headers -method Post -function "foo/bar" -query $query -body $body -cmdlet (Get-Command mockHttpCmdlet)
     $res | Should Not Be BeNullOrEmpty
     $res.Headers | Should Be $headers
     $res.Method | Should Be "Post"
-    $res.Uri | Should Be "https://localhost/foo/bar"
-    $res.Body | Should Be (ConvertTo-Json $payload)
+    $res.Uri | Should Be "https://localhost/foo/bar?a=x&b=y&c=%26S%3c%3e"
+    $res.Body | Should Be $body
   }
 }
 
 Describe "invokeSumoWebRequest" {
   
-  $session = New-Object -TypeName SumoAPISession -Property @{ Endpoint = "https://localhost/"; WebSession = $null }
+  $session = [SumoAPISession]::new("https://localhost/",$null)
   
   It "should call with Invoke-WebRequest" {
     Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility) }
@@ -152,7 +187,7 @@ Describe "invokeSumoWebRequest" {
 
 Describe "invokeSumoRestMethod" {
   
-  $session = New-Object -TypeName SumoAPISession -Property @{ Endpoint = "https://localhost/"; WebSession = $null }
+  $session = [SumoAPISession]::new("https://localhost/",$null)
   
   It "should call with Invoke-RestMethod" {
     Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) }
@@ -166,7 +201,7 @@ Describe "invokeSumoRestMethod" {
 Describe "startSearchJob" {
   It "should call invokeSumoAPI with correct parameters" {
     
-    $_session = New-Object -TypeName SumoAPISession -Property @{ Endpoint = "https://localhost/"; WebSession = $null }
+    $_session = [SumoAPISession]::new("https://localhost/",$null)
     $_query = "_sourceCategory=service"
     $_from = (Get-Date "2018-08-08T00:00:00Z").AddDays(-1)
     $_to = (Get-Date "2018-08-08T00:00:00Z")
@@ -176,10 +211,10 @@ Describe "startSearchJob" {
       $session -eq $_session -and `
         $method -eq [Microsoft.PowerShell.Commands.WebRequestMethod]::Post -and `
         $function -eq "search/jobs" -and `
-        $content["query"] -eq $_query -and `
-        $content["from"] -eq 1533600000000 -and `
-        $content["to"] -eq 1533686400000 -and `
-        $content["timeZone"] -eq $_timeZone -and `
+        $query["query"] -eq $_query -and `
+        $query["from"] -eq 1533600000000 -and `
+        $query["to"] -eq 1533686400000 -and `
+        $query["timeZone"] -eq $_timeZone -and `
         $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) 
     }
     startSearchJob $_session $_query $_from $_to $_timeZone
@@ -201,53 +236,53 @@ Describe "getSearchResult" {
   It "should return message results" {
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
-{
-  "state":"DONE GATHERING RESULTS",
-  "messageCount":3,
-  "histogramBuckets":[],
-  "pendingErrors":[],
-  "pendingWarnings":[],
-  "recordCount":3
-}
+    {
+      "state":"DONE GATHERING RESULTS",
+      "messageCount":3,
+      "histogramBuckets":[],
+      "pendingErrors":[],
+      "pendingWarnings":[],
+      "recordCount":3
+    }
 '@
     } -ParameterFilter { $function -eq "search/jobs/0" }
 
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
-{
-  "fields":[
     {
-      "name":"_messageid",
-      "fieldType":"long",
-      "keyField":false
-    },
-    {
-      "name":"_raw",
-      "fieldType":"string",
-      "keyField":false
+      "fields":[
+        {
+          "name":"_messageid",
+          "fieldType":"long",
+          "keyField":false
+        },
+        {
+          "name":"_raw",
+          "fieldType":"string",
+          "keyField":false
+        }
+      ],
+      "messages":[
+        {
+          "map":{
+            "_messageid":"-9223372036854773763",
+            "_raw":"2013-01-28 13:09:10,333 -0800 INFO Line 1"
+          }
+        },
+        {
+          "map":{
+            "_messageid":"-9223372036854773764",
+            "_raw":"2013-01-28 13:09:11,333 -0800 INFO Line 2"
+          }
+        },
+        {
+          "map":{
+            "_messageid":"-9223372036854773765",
+            "_raw":"2013-01-28 13:19:11,333 -0800 INFO Line 3"
+          }
+        }
+      ]
     }
-  ],
-  "messages":[
-    {
-      "map":{
-        "_messageid":"-9223372036854773763",
-        "_raw":"2013-01-28 13:09:10,333 -0800 INFO Line 1"
-      }
-    },
-    {
-      "map":{
-        "_messageid":"-9223372036854773764",
-        "_raw":"2013-01-28 13:09:11,333 -0800 INFO Line 2"
-      }
-    },
-    {
-      "map":{
-        "_messageid":"-9223372036854773765",
-        "_raw":"2013-01-28 13:19:11,333 -0800 INFO Line 3"
-      }
-    }
-  ]
-}
 '@
     } -ParameterFilter { $function -eq "search/jobs/0/messages" }
     $result = getSearchResult -session $null -id 0 -limit 3 -type "Message"
@@ -259,53 +294,53 @@ Describe "getSearchResult" {
   It "should return record results" {
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
-{
-  "state":"DONE GATHERING RESULTS",
-  "messageCount":3,
-  "histogramBuckets":[],
-  "pendingErrors":[],
-  "pendingWarnings":[],
-  "recordCount":3
-}
+    {
+      "state":"DONE GATHERING RESULTS",
+      "messageCount":3,
+      "histogramBuckets":[],
+      "pendingErrors":[],
+      "pendingWarnings":[],
+      "recordCount":3
+    }
 '@
     } -ParameterFilter { $function -eq "search/jobs/0" }
 
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
-{
-  "fields":[
     {
-      "name":"_sourcecategory",
-      "fieldType":"string",
-      "keyField":true
-    },
-    {
-      "name":"_count",
-      "fieldType":"int",
-      "keyField":false
+      "fields":[
+        {
+          "name":"_sourcecategory",
+          "fieldType":"string",
+          "keyField":true
+        },
+        {
+          "name":"_count",
+          "fieldType":"int",
+          "keyField":false
+        }
+      ],
+      "records":[
+        {
+          "map":{
+            "_count":"90",
+            "_sourcecategory":"service"
+          }
+        },
+        {
+          "map":{
+            "_count":"80",
+            "_sourcecategory":"service"
+          }
+        },
+        {
+          "map":{
+            "_count":"70",
+            "_sourcecategory":"service"
+          }
+        }
+      ]
     }
-  ],
-  "records":[
-    {
-      "map":{
-        "_count":"90",
-        "_sourcecategory":"service"
-      }
-    },
-    {
-      "map":{
-        "_count":"80",
-        "_sourcecategory":"service"
-      }
-    },
-    {
-      "map":{
-        "_count":"70",
-        "_sourcecategory":"service"
-      }
-    }
-  ]
-}
 '@
     } -ParameterFilter { $function -eq "search/jobs/0/records" }
     $result = getSearchResult -session $null -id 0 -limit 3 -type "Record"
@@ -313,4 +348,58 @@ Describe "getSearchResult" {
     $result.Count | Should Be 3
     $result[0]._count | Should Be 90
   } 
+}
+
+Describe "convertCollectorToJson" {
+
+  It "should convert valid collector PSObject to json" {
+    $obj = New-Object -TypeName psobject -Property @{
+      "collectorType" = "Hosted"
+      "name"          = "My Hosted Collector"
+      "description"   = "An example Hosted Collector"
+      "category"      = "HTTP Collection"
+      "timeZone"      = "UTC"
+    }
+    $result = convertCollectorToJson $obj
+    $result | Should Not BeNullOrEmpty
+    $expected = @'
+    {
+      "collector": {
+        "description": "An example Hosted Collector",
+        "timeZone": "UTC",
+        "collectorType": "Hosted",
+        "category": "HTTP Collection",
+        "name": "My Hosted Collector"
+      }
+    }
+'@
+    comparePSObjects (ConvertFrom-Json $result).collector (ConvertFrom-Json $expected).collector | Should Be $null
+  }
+
+  It "should remove unexpected fields" {
+    $obj = New-Object -TypeName PSObject -Property @{
+      "collectorType" = "Hosted"
+      "name"          = "My Hosted Collector"
+      "description"   = "An example Hosted Collector"
+      "category"      = "HTTP Collection"
+      "timeZone"      = "UTC"
+      "id"            = 100772723
+      "alive"         = $true
+    }
+    $result = convertCollectorToJson $obj
+    $result | Should Not BeNullOrEmpty
+    $expected = @'
+    {
+      "collector": {
+        "description": "An example Hosted Collector",
+        "collectorType": "Hosted",
+        "category": "HTTP Collection",
+        "timeZone": "UTC",
+        "name": "My Hosted Collector"
+      }
+    }
+'@
+    comparePSObjects (ConvertFrom-Json $result).collector (ConvertFrom-Json $expected).collector | Should Be $null
+  }
+
 }

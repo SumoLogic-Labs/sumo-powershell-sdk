@@ -10,7 +10,7 @@
 function Remove-Collector {
   [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
   param(
-    $Session = $Script:sumoSession,
+    [SumoAPISession]$Session = $sumoSession,
     [parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
     [long]$Id,
     [switch]$Force

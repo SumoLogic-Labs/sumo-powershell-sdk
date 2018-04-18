@@ -1,4 +1,5 @@
 . $PSScriptRoot/Global.ps1
+. $ModuleRoot/Lib/Definitions.ps1
 
 $exportedCommands = (Get-Command -Module $ModuleName)
 
@@ -8,7 +9,7 @@ Describe "$($ModuleName) Module" {
   }
 
   It "should contains expected commands" {
-    $exportedCommands.Length | Should Be 9
+    $exportedCommands.Length | Should Be 10
   }
 
   Foreach ($command in $exportedCommands) {

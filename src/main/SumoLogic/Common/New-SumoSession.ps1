@@ -8,7 +8,7 @@
 #>
 
 function New-SumoSession {
-  [CmdletBinding(SupportsShouldProcess, ConfirmImpact="Low")]
+  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "Low")]
   param(
     [parameter(ParameterSetName = "ByPSCredential", Mandatory = $true, ValueFromPipeline = $true)]
     [PSCredential]$Credential,
@@ -16,7 +16,7 @@ function New-SumoSession {
     [string]$AccessId,
     [parameter(ParameterSetName = "ByAccessKey", Mandatory = $true)]
     [string]$AccessKey,
-    [switch]$ForceUpdate = $false
+    [switch]$ForceUpdate
   )
   begin {
     # TLS 1.1+ is not enabled by default in Windows PowerShell, but it is
@@ -33,6 +33,7 @@ function New-SumoSession {
       $Credential = New-Object System.Management.Automation.PSCredential ($AccessId, $secpasswd)
     }
     $session = getSession $Credential
+    $session
   }
   end {
     if ($session -and ($ForceUpdate -or $PSCmdlet.ShouldProcess("The default connection in current session will be updated. Continue?"))) {
