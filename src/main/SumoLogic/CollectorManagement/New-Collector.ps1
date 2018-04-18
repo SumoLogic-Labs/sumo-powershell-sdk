@@ -11,9 +11,9 @@ function New-Collector {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "Medium")]
   param(
     [SumoAPISession]$Session = $sumoSession,
-    [parameter(ParameterSetName = "ByObject", ValueFromPipeline = $true)]
+    [parameter(ParameterSetName = "ByObject", ValueFromPipeline = $true, Position = 0)]
     [psobject]$Collector,
-    [parameter(ParameterSetName = "ByJson")]
+    [parameter(ParameterSetName = "ByJson", Position = 0)]
     [string]$Json,
     [switch]$Force
   )
