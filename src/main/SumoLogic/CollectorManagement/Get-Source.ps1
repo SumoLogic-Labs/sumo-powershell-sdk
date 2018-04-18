@@ -38,11 +38,11 @@ function Get-Source {
           $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources").sources | Where-Object { $_.name -match [regex]$NamePattern }
         }
         "ByPage" {
-          $body = @{
+          $query = @{
             'offset' = $Offset
             'limit'  = $Limit
           }
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources" -content $body).sources
+          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources" -content $query).sources
         }
 
       }

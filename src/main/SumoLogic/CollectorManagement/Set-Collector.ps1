@@ -8,13 +8,13 @@
 #>
 
 function Set-Collector {
-  [CmdletBinding(SupportsShouldProcess, ConfirmImpact="Medium")]
+  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "Medium")]
   param(
-    $Session = $Script:sumoSession,
+    [SumoAPISession]$Session = $Script:sumoSession,
     [parameter(Mandatory = $true, ValueFromPipeline = $true)]
-    $Collector,
+    [psobject]$Collector,
     [switch]$Passthru,
-    [switch]$Force = $false
+    [switch]$Force
   )
   process {
     $Collector | ForEach-Object {
@@ -29,7 +29,7 @@ function Set-Collector {
       $target = ConvertFrom-Json $org.Content
       $target.collector = $_
       if ($Force -or $PSCmdlet.ShouldProcess("Collector[$Id] will be updated. Continue?")) {
-        $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$Id" -content $target
+        $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$Id" -content (ConvertTo-Json $target -Depth 10)
       }
       if ($res -and $Passthru) {
         $res.collector

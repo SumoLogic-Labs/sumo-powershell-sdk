@@ -59,7 +59,10 @@
   )
 
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-  # ScriptsToProcess = @()
+  ScriptsToProcess = @(
+    'Lib/Definitions.ps1'
+    'Lib/Utils.ps1'
+  )
 
   # Type files (.ps1xml) to be loaded when importing this module
   # TypesToProcess = @()
@@ -71,6 +74,7 @@
   NestedModules = @(
     'CollectorManagement/Get-Collector.ps1'
     'CollectorManagement/Get-Source.ps1'
+    'CollectorManagement/New-Collector.ps1'
     'CollectorManagement/Remove-Collector.ps1'
     'CollectorManagement/Remove-Source.ps1'
     'CollectorManagement/Set-Collector.ps1'
@@ -85,6 +89,7 @@
     'Get-Collector'
     'Get-SearchResult'
     'Get-Source'
+    'New-Collector'
     'New-SumoSession'
     'Remove-Collector'
     'Remove-Source'

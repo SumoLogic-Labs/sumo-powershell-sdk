@@ -8,5 +8,8 @@ Write-Host "Module Root - $ModuleRoot"
 $Script:TestRoot = Get-Item "$PSScriptRoot\.."
 Write-Host "Test Root - $TestRoot"
 
-Import-Module $ModuleRoot
-Import-Module "Microsoft.PowerShell.Utility"
+Import-Module $ModuleRoot -Force
+
+# To run full set of test, uncomment following lines and fill with real access id/key from Sumo Logic
+# $Global:AccessId = 
+# $Global:AccessKey = 

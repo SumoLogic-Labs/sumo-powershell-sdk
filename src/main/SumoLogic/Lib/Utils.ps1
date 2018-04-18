@@ -18,7 +18,7 @@ function getSession([System.Management.Automation.PSCredential]$credential) {
       $res = Invoke-RestMethod -Uri $url -Headers $defaultHeaders -Method Get `
         -Credential $credential -SessionVariable webSession -ErrorAction SilentlyContinue -ErrorVariable err
       if ($res) {
-        return New-Object -TypeName SumoAPISession -Property @{ Endpoint = $apiEndpoint; WebSession = $webSession}
+        return [SumoAPISession]::new($apiEndpoint, $webSession)
       }
     }
     catch {
@@ -58,49 +58,46 @@ function invokeSumoAPI([SumoAPISession]$session,
   [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
   [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
   [string]$function,
-  [hashtable]$content,
+  [hashtable]$query,
+  [string]$body,
   $cmdlet) {
 
     $url = $session.Endpoint + $function
-    if ($method -eq [Microsoft.PowerShell.Commands.WebRequestMethod]::Get) {
-      if ($content) {
-        $qStr = getQueryString($content)
-        $url += "?" + $qStr
-      }
-      & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession
+    if ($query) {
+      $qStr = getQueryString($query)
+      $url += "?" + $qStr
     }
-    else {
-      $url = $session.Endpoint + $function
-      & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body (ConvertTo-Json $content -Depth 10)
-    }
+    & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body
   }
 
 function invokeSumoWebRequest([SumoAPISession]$session,
   [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
   [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
   [string]$function,
-  [hashtable]$content) {
-    invokeSumoAPI $session $headers $method $function $content (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility)
+  [hashtable]$query,
+  [string]$body) {
+    invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility)
 }
 
 function invokeSumoRestMethod([SumoAPISession]$session,
   [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
   [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
   [string]$function,
-  [hashtable]$content) {
-    invokeSumoAPI $session $headers $method $function $content (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility)
+  [hashtable]$query,
+  [string]$body) {
+    invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility)
 }
 
 function startSearchJob ([SumoAPISession]$session, [string]$query, [datetime]$from, [datetime]$to, [string]$timeZone) {
   $fromT = getUnixTimeStamp ($from)
   $toT = getUnixTimeStamp ($to)
-  $content = @{
+  $q = @{
     "query"    = $query
     "from"     = $fromT
     "to"       = $toT
     "timeZone" = $timeZone
   }
-  invokeSumoRestMethod -session $session -method Post -function "search/jobs" -content $content
+  invokeSumoRestMethod -session $session -method Post -function "search/jobs" -query $q
 }
 
 function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [SumoSearchResultType]$type) {
@@ -124,7 +121,7 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
   $offset = 0
   while ($offset -le $total) {
     $func = "search/jobs/{0}/{1}" -f $id, $ttype
-    $res = invokeSumoRestMethod -session $session -method Get -function $func -content @{
+    $res = invokeSumoRestMethod -session $session -method Get -function $func -query @{
       "offset" = $offset
       "limit" = $page
     }
@@ -142,4 +139,26 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
     $offset += $page
   }
   $ret
+}
+
+function convertCollectorToJson([psobject]$collector) {
+  if (!($collector.collectorType -and $collector.collectorType -ieq "Hosted")) {
+    throw "Only hosted collector can be created though API"
+  }
+  $validProperties = @(
+    "collectorType",
+    "name",
+    "description",
+    "category",
+    "timeZone"
+  )
+  $propNames = $collector.PSObject.Properties | ForEach-Object { $_.Name }
+  $propNames | ForEach-Object {
+    if (!($_ -in $validProperties)) {
+      Write-Warning "Property [$_] in input object is removed."
+      $collector.PSObject.Properties.Remove($_)
+    }
+  }
+  $wrapper = New-Object -TypeName psobject @{ "collector" = $collector }
+  ConvertTo-Json $wrapper -Depth 10
 }
