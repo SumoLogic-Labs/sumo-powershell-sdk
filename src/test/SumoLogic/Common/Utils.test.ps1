@@ -2,44 +2,49 @@
 . $ModuleRoot/Lib/Definitions.ps1
 . $ModuleRoot/Lib/Utils.ps1
 
-function convertFromJson($json) {
-  $hashtable = @{}
-  (ConvertFrom-Json $json).PSObject.Properties | ForEach-Object { $hashtable[$_.Name] = $_.Value }
-  $hashtable
+function dotify([hashtable]$acc, $key, $value, [string]$prefix) {
+  $pk = if ($prefix) { "$prefix.$key" }  else { "$key" }
+  if ($value -is [hashtable]) {
+    $value.Keys | ForEach-Object { 
+      dotify $acc  $_  $value.Item($_) $pk
+    }
+  }
+  elseif ($value -is [array]) {
+    for ($i = 0; $i -lt $value.Count; ++$i) {
+      dotify $acc  $i $value[$i] $pk
+    }
+  }
+  elseif ($value -is [psobject]) {
+    $value.PSObject.Properties | ForEach-Object {
+      dotify $acc  $_.Name  $_.Value $pk
+    }
+  }
+  else {
+    $acc[$pk] = $value    
+  }
 }
 
-function compareObjectProperties($lhs, $rhs, $props) {
-  foreach ($prop in $props) {
-    $lhsProp = $lhs.PSObject.Properties | Where-Object { $_.Name -eq $prop }
-    $rhsProp = $rhs.PSObject.Properties | Where-Object { $_.Name -eq $prop }
-    if (!$lhsProp -and !$rhsProp) {
-    } elseif (!$lhsProp) {
+function convertToDotifyHash($in) {
+  $res = @{}
+  dotify $res "" $in $nul
+  $res
+}
+
+function compareHashtables([hashtable]$lhs, [hashtable]$rhs) {
+  $keys = $lhs.Keys + $rhs.Keys | Sort-Object | Select-Object -Unique
+  foreach ($key in $keys) {
+    if ($lhs[$key] -ne $rhs[$key]) {
       New-Object -TypeName psobject -Property @{
-        "Property" = $prop
-        "Left" = $null
-        "Right" = "$($rhsProp[0].Value)"
-      }
-    } elseif (!$rhsProp) {
-      New-Object -TypeName psobject -Property @{
-        "Property" = $prop
-        "Left" = "$($lhsProp[0].Value)"
-        "Right" = $null
-      }
-    } elseif ($lhsProp[0].Value -ne $rhsProp[0].Value) {
-      New-Object -TypeName psobject -Property @{
-        "Property" = $prop
-        "Left" = "$($lhsProp[0].Value)"
-        "Right" = "$($rhsProp[0].Value)"
+        "Key"   = $prop
+        "Left"  = $lhs[$key]
+        "Right" = $rhs[$key]
       }
     }
   }
 }
 
-Function comparePSObjects($lhs, $rhs) {
-  $props = $lhs.PSObject.Properties | ForEach-Object Name
-  $props += $rhs.PSObject.Properties | ForEach-Object Name
-  $props = $props | Sort-Object | Select-Object -Unique
-  compareObjectProperties $lhs $rhs $props
+function comparePSObjects($lhs, $rhs) {
+  compareHashtables (convertToDotifyHash $lhs) (convertToDotifyHash $rhs)
 }
 
 function mockHttpCmdlet {
@@ -99,6 +104,22 @@ Describe "getSession" {
   }
 }
 
+Describe "getHex" {
+  It "should transfer long id to Hex" {
+    getHex(123456) | Should Be "000000000001E240"
+  }
+}
+
+Describe "getFullName" {
+  It "should print name with ID" {
+    $obj = New-Object -TypeName psobject -Property @{
+      "id"   = 101792472
+      "name" = "collector_gc"
+    }
+    getFullName($obj) | Should Be "collector_gc [0000000006113AD8]"
+  }
+}
+
 Describe "urlEncode" {
   It "should encode the word to URL" {
     urlEncode ""  | Should Be ""
@@ -142,7 +163,7 @@ Describe "getDotNetDateTime" {
 }
 
 Describe "invokeSumoAPI" {
-  $session = [SumoAPISession]::new("https://localhost/",$null)
+  $session = [SumoAPISession]::new("https://localhost/", $null)
   $headers = @{
     "content-type" = "application/json"
     "accept"       = "application/text"
@@ -174,7 +195,7 @@ Describe "invokeSumoAPI" {
 
 Describe "invokeSumoWebRequest" {
   
-  $session = [SumoAPISession]::new("https://localhost/",$null)
+  $session = [SumoAPISession]::new("https://localhost/", $null)
   
   It "should call with Invoke-WebRequest" {
     Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility) }
@@ -187,7 +208,7 @@ Describe "invokeSumoWebRequest" {
 
 Describe "invokeSumoRestMethod" {
   
-  $session = [SumoAPISession]::new("https://localhost/",$null)
+  $session = [SumoAPISession]::new("https://localhost/", $null)
   
   It "should call with Invoke-RestMethod" {
     Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) }
@@ -201,7 +222,7 @@ Describe "invokeSumoRestMethod" {
 Describe "startSearchJob" {
   It "should call invokeSumoAPI with correct parameters" {
     
-    $_session = [SumoAPISession]::new("https://localhost/",$null)
+    $_session = [SumoAPISession]::new("https://localhost/", $null)
     $_query = "_sourceCategory=service"
     $_from = (Get-Date "2018-08-08T00:00:00Z").AddDays(-1)
     $_to = (Get-Date "2018-08-08T00:00:00Z")
@@ -401,5 +422,78 @@ Describe "convertCollectorToJson" {
 '@
     comparePSObjects (ConvertFrom-Json $result).collector (ConvertFrom-Json $expected).collector | Should Be $null
   }
+}
 
+Describe "convertSourceToJson" {
+
+  It "should convert valid source PSObject to json" {
+    $obj = New-Object -TypeName psobject -Property @{
+      "sourceType" = "SystemStats"
+      "name"       = "Host_Metrics"
+      "interval"   = 60000
+      "hostName"   = "my_host"
+      "metrics"    = @("CPU_User", "CPU_Sys")
+    }
+    $result = convertSourceToJson $obj
+    $result | Should Not BeNullOrEmpty
+    $expected = @'
+    {
+      "source": {
+        "sourceType": "SystemStats",
+        "name": "Host_Metrics",
+        "interval": 60000,
+        "hostName": "my_host",
+        "metrics": ["CPU_User", "CPU_Sys"]
+      }
+    }
+'@
+    $lhs = (ConvertFrom-Json $result).source
+    $rhs = (ConvertFrom-Json $expected).source
+    comparePSObjects $lhs $rhs | Should Be $null
+  }
+
+  It "should remove collectorId, id and alive fields" {
+    $obj = New-Object -TypeName PSObject -Property @{
+      "collectorId"                = 1234567
+      "id"                         = 101792472
+      "name"                       = "collector_gc"
+      "category"                   = "collector_gc"
+      "hostName"                   = "nite-receiver-1"
+      "automaticDateParsing"       = $true
+      "multilineProcessingEnabled" = $true
+      "useAutolineMatching"        = $true
+      "forceTimeZone"              = $false
+      "filters"                    = @()
+      "cutoffTimestamp"            = 0
+      "encoding"                   = "UTF-8"
+      "pathExpression"             = "/usr/sumo/logs/collector/collector.gc.log*"
+      "blacklist"                  = @()
+      "sourceType"                 = "LocalFile"
+      "alive"                      = $true
+    }
+    $result = convertSourceToJson $obj
+    $result | Should Not BeNullOrEmpty
+    $expected = @'
+    {
+      "source":{
+        "name":"collector_gc",
+        "category":"collector_gc",
+        "hostName":"nite-receiver-1",
+        "automaticDateParsing":true,
+        "multilineProcessingEnabled":true,
+        "useAutolineMatching":true,
+        "forceTimeZone":false,
+        "filters":[],
+        "cutoffTimestamp":0,
+        "encoding":"UTF-8",
+        "pathExpression":"/usr/sumo/logs/collector/collector.gc.log*",
+        "blacklist":[],
+        "sourceType":"LocalFile",
+      }
+    }
+'@
+    $lhs = (ConvertFrom-Json $result).source
+    $rhs = (ConvertFrom-Json $expected).source
+    comparePSObjects $lhs $rhs | Should Be $null
+  }
 }
