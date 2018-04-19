@@ -16,10 +16,8 @@ function Remove-Collector {
     [switch]$Force
   )
   process {
-    $Id | ForEach-Object {
-      if ($Force -or $pscmdlet.ShouldProcess("Collector[$_] will be removed. Continue?")) {
-        invokeSumoRestMethod -session $Session -method Delete -function "collectors/$_"
-      }
+    if ($Force -or $pscmdlet.ShouldProcess("Collector[$Id] will be removed. Continue?")) {
+      invokeSumoRestMethod -session $Session -method Delete -function "collectors/$Id"
     }
   }
 }

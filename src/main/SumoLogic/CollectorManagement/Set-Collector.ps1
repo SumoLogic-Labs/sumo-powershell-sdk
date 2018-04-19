@@ -17,23 +17,21 @@ function Set-Collector {
     [switch]$Force
   )
   process {
-    $Collector | ForEach-Object {
-      $Id = $_.id
-      $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$Id"
-      $etag = $org.Headers.ETag
+    $Id = $Collector.id
+    $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$Id"
+    $etag = ([string[]]$org.Headers.ETag)[0]
+    if ($Force -or $PSCmdlet.ShouldProcess("Collector[$Id] will be updated. Continue?")) {
       $headers = @{
-        "If-Match"     = $etag[0]
+        "If-Match"     = $etag
         'content-type' = 'application/json'
         'accept'       = 'application/json'
       }
-      $target = ConvertFrom-Json $org.Content
-      $target.collector = $_
-      if ($Force -or $PSCmdlet.ShouldProcess("Collector[$Id] will be updated. Continue?")) {
-        $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$Id" -body (ConvertTo-Json $target -Depth 10)
-      }
-      if ($res -and $Passthru) {
-        $res.collector
-      }
+      $wrapper = New-Object -TypeName psobject @{ "collector" = $Collector }
+      $json = ConvertTo-Json $wrapper -Depth 10
+      $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$Id" -body $json
+    }
+    if ($res -and $Passthru) {
+      $res.collector
     }
   }
 }
