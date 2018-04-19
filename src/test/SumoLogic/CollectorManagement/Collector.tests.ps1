@@ -1,14 +1,14 @@
 . $PSScriptRoot/../Common/Global.ps1
 
 function cleanup {
-  New-SumoSession -AccessId $AccessId -AccessKey $AccessKey | Out-Null
+  New-SumoSession -AccessId $AccessId -AccessKey $AccessKey
   Get-Collector -NamePattern "PowerShell_Test.*"| Remove-Collector -Force
 }
 
-function testCollector {
+function testCollector($suffix = "") {
   $obj = New-Object -TypeName psobject -Property @{
     "collectorType" = "Hosted"
-    "name"          = "PowerShell_Test"
+    "name"          = "PowerShell_Test$suffix"
     "description"   = "An example Hosted Collector"
     "category"      = "HTTP Collection"
     "timeZone"      = "UTC"
@@ -16,6 +16,45 @@ function testCollector {
   $res = New-Collector -Collector $obj
   $res | Should Not BeNullOrEmpty
   $res
+}
+
+Describe "Get-Collector" {
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+
+  BeforeEach {
+    cleanup
+  }
+
+  AfterEach {
+    cleanup
+  }
+
+  It "should get single collector by id" {
+    $id = (testCollector).id
+    $res = Get-Collector $id
+    $res | Should Not BeNullOrEmpty
+    $res -isnot [array] | Should Be $true
+    $res.id | Should Be $id
+  }
+  
+  It "should get collectors by name pattern" {
+    testCollector "0" | Out-Null
+    testCollector "1" | Out-Null
+    $res = Get-Collector -NamePattern "PowerShell_Test"
+    $res | Should Not BeNullOrEmpty
+    $res.Count | Should Be 2
+  }
+
+  It "should get collectors by page" {
+    @(1..10) | ForEach-Object { testCollector "$_" }
+    $res1 = Get-Collector -Offset 0 -Limit 5
+    $res1 | Should Not BeNullOrEmpty
+    $res1.Count | Should Be 5
+    $res2 = Get-Collector -Offset 5 -Limit 3
+    $res2 | Should Not BeNullOrEmpty
+    $res2.Count | Should Be 3
+    $res1[0].id | Should Not Be $res2[0].id
+  }
 }
 
 Describe "New-Collector" {

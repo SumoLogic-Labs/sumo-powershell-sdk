@@ -17,7 +17,7 @@ function Remove-Collector {
   )
   process {
     $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$Id").collector
-    if ($collector -and ($Force -or $pscmdlet.ShouldProcess("Remove collector $($collector.name)[$(idify($collector.id))]. Continue?"))) {
+    if ($collector -and ($Force -or $pscmdlet.ShouldProcess("Remove collector $(getFullName $collector). Continue?"))) {
       invokeSumoRestMethod -session $Session -method Delete -function "collectors/$Id"
     }
   }

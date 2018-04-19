@@ -33,7 +33,7 @@ function getHex([long]$id) {
 }
 
 function getFullName([psobject]$obj) {
-  "{0} [{1}]" -f $obj.name, (getHex $obj.id)
+  "'{0}'[{1}]" -f $obj.name, (getHex $obj.id)
 }
 
 function urlEncode([string]$str) {

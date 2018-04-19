@@ -116,7 +116,7 @@ Describe "getFullName" {
       "id"   = 101792472
       "name" = "collector_gc"
     }
-    getFullName($obj) | Should Be "collector_gc [0000000006113AD8]"
+    getFullName($obj) | Should Be "'collector_gc'[0000000006113AD8]"
   }
 }
 

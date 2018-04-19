@@ -19,7 +19,7 @@ function Set-Collector {
   process {
     $Id = $Collector.id
     $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$Id"
-    if ($org -and ($Force -or $PSCmdlet.ShouldProcess("Update collector $($org.name)[$Id]. Continue?"))) {
+    if ($org -and ($Force -or $PSCmdlet.ShouldProcess("Update collector $(getFullName $collector). Continue?"))) {
       $etag = ([string[]]$org.Headers.ETag)[0]
       $headers = @{
         "If-Match"     = $etag
