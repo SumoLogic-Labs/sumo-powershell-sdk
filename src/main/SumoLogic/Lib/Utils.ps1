@@ -28,6 +28,13 @@ function getSession([System.Management.Automation.PSCredential]$credential) {
   Write-Verbose "$err"
   return $null
 } 
+function getHex([long]$id) {
+  "{0:X16}" -f $id
+}
+
+function getFullName([psobject]$obj) {
+  "{0} [{1}]" -f $obj.name, (getHex $obj.id)
+}
 
 function urlEncode([string]$str) {
   [System.Web.HttpUtility]::UrlEncode($str)
@@ -55,7 +62,7 @@ function getDotNetDateTime([long]$time) {
 }
 
 function invokeSumoAPI([SumoAPISession]$session,
-  [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
+  [hashtable]$headers = $Script:defaultHeaders,
   [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
   [string]$function,
   [hashtable]$query,
@@ -71,7 +78,7 @@ function invokeSumoAPI([SumoAPISession]$session,
   }
 
 function invokeSumoWebRequest([SumoAPISession]$session,
-  [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
+  [hashtable]$headers = $Script:defaultHeaders,
   [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
   [string]$function,
   [hashtable]$query,
@@ -80,7 +87,7 @@ function invokeSumoWebRequest([SumoAPISession]$session,
 }
 
 function invokeSumoRestMethod([SumoAPISession]$session,
-  [System.Collections.IDictionary]$headers = $Script:defaultHeaders,
+  [hashtable]$headers = $Script:defaultHeaders,
   [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
   [string]$function,
   [hashtable]$query,
@@ -155,10 +162,27 @@ function convertCollectorToJson([psobject]$collector) {
   $propNames = $collector.PSObject.Properties | ForEach-Object { $_.Name }
   $propNames | ForEach-Object {
     if (!($_ -in $validProperties)) {
-      Write-Warning "Property [$_] in input object is removed."
+      Write-Warning "Property [$_] in input collector is removed."
       $collector.PSObject.Properties.Remove($_)
     }
   }
   $wrapper = New-Object -TypeName psobject @{ "collector" = $collector }
+  ConvertTo-Json $wrapper -Depth 10
+}
+
+function convertSourceToJson([psobject]$source) {
+  $removeProperties = @(
+    "collectorId",
+    "id",
+    "alive"
+  )
+  $propNames = $source.PSObject.Properties | ForEach-Object { $_.Name }
+  $propNames | ForEach-Object {
+    if ($_ -in $removeProperties) {
+      Write-Warning "Property [$_] in input source is removed."
+      $source.PSObject.Properties.Remove($_)
+    }
+  }
+  $wrapper = New-Object -TypeName psobject @{ "source" = $source }
   ConvertTo-Json $wrapper -Depth 10
 }

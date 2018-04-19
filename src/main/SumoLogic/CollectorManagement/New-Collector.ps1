@@ -26,9 +26,11 @@ function New-Collector {
         $Collector = (ConvertFrom-Json $Json).collector
       }
     }
-    if ($Force -or $PSCmdlet.ShouldProcess("Create $($Collector.type) collector with name $($Collector.name) will be created. Continue?")) {
-      $res = invokeSumoRestMethod -session $Session -headers $headers -method Post -function "collectors" -body $Json
-      $res.collector
+    if ($Force -or $PSCmdlet.ShouldProcess("Create $($Collector.type) collector with name $($Collector.name). Continue?")) {
+      $ret = invokeSumoRestMethod -session $Session -method Post -function "collectors" -body $Json
+    }
+    if ($ret) {
+      $ret.collector
     }
   }
 }
