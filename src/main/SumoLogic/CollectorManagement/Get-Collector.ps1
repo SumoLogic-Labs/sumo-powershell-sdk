@@ -20,27 +20,24 @@ function Get-Collector {
     [parameter(ParameterSetName = "ByPage", Mandatory = $true)]
     [int]$Limit
   )
-  process {
-    switch ($PSCmdlet.ParameterSetName) {
-      "ById" {
-        if (-not ($Id)) {
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors
-        }
-        else {
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$Id").collector
-        }
+  switch ($PSCmdlet.ParameterSetName) {
+    "ById" {
+      if (-not ($Id)) {
+        (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors
       }
-      "ByName" {
-        $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors | Where-Object { $_.name -match [regex]$NamePattern }
-      }
-      "ByPage" {
-        $query = @{
-          'offset' = $Offset
-          'limit'  = $Limit
-        }
-        $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors" -query $query).collectors
+      else {
+        (invokeSumoRestMethod -session $Session -method Get -function "collectors/$Id").collector
       }
     }
-    $ret
+    "ByName" {
+      (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors | Where-Object { $_.name -match [regex]$NamePattern }
+    }
+    "ByPage" {
+      $query = @{
+        'offset' = $Offset
+        'limit'  = $Limit
+      }
+      (invokeSumoRestMethod -session $Session -method Get -function "collectors" -query $query).collectors
+    }
   }
 }
