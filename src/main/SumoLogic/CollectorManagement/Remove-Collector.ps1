@@ -1,10 +1,25 @@
 <#
 .SYNOPSIS
-    Collector
+Remove a collector
+
 .DESCRIPTION
-    Remove collector/s.
+Remove collector from organization
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER Id
+The id of collector in long
+
 .EXAMPLE
-    Remove-Collector
+Get-Collector 12345 | Remove-Collector
+Remove collector with id 12345
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function Remove-Collector {

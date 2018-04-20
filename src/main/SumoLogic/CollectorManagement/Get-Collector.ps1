@@ -1,10 +1,46 @@
 <#
 .SYNOPSIS
-    Collector
+Get the information of collector(s)
+
 .DESCRIPTION
-    Get collector/s details.
+Get the information of collector(s) based on id or name pattern. The result can also be retrieved in pages if there are many collectors in your organization
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER Id
+The id of collector in long
+
+.PARAMETER NamePattern
+A string contains a regular expression which used to search collector(s) by name
+
+.PARAMETER Offset
+The offset used for paging result
+
+.PARAMETER Limit
+The limit (e.g. page size) used for paging result
+
 .EXAMPLE
-    Get-Collector
+Get-Collector
+Get all collectors in current organization
+
+.EXAMPLE
+Get-Collector -Id 12345
+Get collector with id 12345
+
+.EXAMPLE
+Get-Collector -NamePattern "IIS"
+Get all collector(s) which name contains "IIS"
+
+.EXAMPLE
+Get-Collector -Offset 100 -Limit 50
+Get all collectors in current organization in page; return 50 results from begin from the 100th result
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function Get-Collector {

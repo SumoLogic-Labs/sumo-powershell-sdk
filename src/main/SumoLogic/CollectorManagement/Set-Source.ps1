@@ -1,10 +1,30 @@
 <#
 .SYNOPSIS
-    Source
+Update the configuration of a source
+
 .DESCRIPTION
-    Edit sources.
+Update the configuration of a source with fields in PSObject
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER Source
+A PSObject contains source definition
+
 .EXAMPLE
-    Set-Source
+Set-Source -Source $source
+Update source with the properties in $source
+
+.EXAMPLE
+Set-Source -Source $source -Passthru
+Update source with the properties in $source and return the updated result from server
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+The input collector must contains a valid id field
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function Set-Source {

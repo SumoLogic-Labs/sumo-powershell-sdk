@@ -1,10 +1,28 @@
 <#
 .SYNOPSIS
-    Source
+Remove a source
+
 .DESCRIPTION
-    Remove sources.
+Remove source from specific collector
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER CollectorId
+The id of collector in long
+
+.PARAMETER SourceId
+The id of source in long
+
 .EXAMPLE
-    Remove-Source
+Get-Source -CollectorId 12345 -NamePattern "Web Log File" | Remove-Source
+Remove source(s) which name contains "Web Log File" and in collector with id 12345
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function Remove-Source {
