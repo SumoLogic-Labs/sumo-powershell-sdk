@@ -9,6 +9,7 @@ $Script:TestRoot = Get-Item "$PSScriptRoot\.."
 Write-Host "Test Root - $TestRoot"
 
 Import-Module $ModuleRoot -Force
+. "$TestRoot/Common/TestHelpers.ps1"
 
 # To run full set of test, uncomment following lines and fill with real access id/key from Sumo Logic
 # $Global:AccessId = 

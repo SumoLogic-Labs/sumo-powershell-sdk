@@ -10,8 +10,8 @@
 function Set-Source {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "Medium")]
   param(
-    $Session = $Script:sumoSession,
-    [parameter(Mandatory = $true, ValueFromPipeline = $true)]
+    [SumoAPISession]$Session = $Script:sumoSession,
+    [parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
     $Source,
     [switch]$Passthru,
     [switch]$Force

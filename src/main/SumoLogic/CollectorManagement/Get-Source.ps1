@@ -10,7 +10,7 @@
 function Get-Source {
   [CmdletBinding(DefaultParameterSetName = "ById")]
   param(
-    $Session = $Script:sumoSession,
+    [SumoAPISession]$Session = $Script:sumoSession,
     [parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
     [alias('id')]
     [long]$CollectorId,

@@ -137,5 +137,89 @@ Describe "New-Source" {
     $res.id | Should Not BeNullOrEmpty
     $res.collectorId | Should Be $cid2
   }
+}
 
+Describe "Remove-Source" {
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+
+  BeforeEach {
+    cleanup
+  }
+
+  AfterEach {
+    cleanup
+  }
+
+  It "should remove source by id" {
+    $cid = (testCollector).id
+    $sid = (testSource $cid).id
+
+    Remove-Source $cid $sid -Force
+    {
+      Get-Source $cid $sid
+    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+  }
+
+  It "should remove source from pipeline" {
+    $cid = (testCollector).id
+    $sid = (testSource $cid).id
+
+    Get-Source $cid $sid | Remove-Source -Force
+    {
+      Get-Source $cid $sid
+    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+  }
+}
+
+Describe "Set-Source" {
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+
+  BeforeEach {
+    cleanup
+  }
+
+  AfterEach {
+    cleanup
+  }
+
+  It "should update source properties" {
+    $cid = (testCollector).id
+    $source = testSource $cid
+    $source.name = "Example_HTTP_Source_Modified"
+    $source.category = "category_modified"
+    $source.hostName = "hostname_modified"
+    Set-Source $source -Force
+    $updated = Get-Source $cid $source.id
+    $updated | Should Not BeNullOrEmpty
+    $updated.name | Should Be "Example_HTTP_Source_Modified"
+    $updated.category | Should Be "category_modified"
+    $updated.hostName | Should Be "hostname_modified"
+  }
+
+  It "should update source from pipeline" {
+    $cid = (testCollector).id
+    $source = testSource $cid
+    $source.name = "Example_HTTP_Source_Modified"
+    $source.category = "category_modified"
+    $source.hostName = "hostname_modified"
+    $source | Set-Source -Force
+    $updated = Get-Source $cid $source.id
+    $updated | Should Not BeNullOrEmpty
+    $updated.name | Should Be "Example_HTTP_Source_Modified"
+    $updated.category | Should Be "category_modified"
+    $updated.hostName | Should Be "hostname_modified"
+  }
+
+  It "should update source and return it if with -Passthru" {
+    $cid = (testCollector).id
+    $source = testSource $cid
+    $source.name = "Example_HTTP_Source_Modified"
+    $source.category = "category_modified"
+    $source.hostName = "hostname_modified"
+    $updated = $source | Set-Source -Force -Passthru
+    $updated | Should Not BeNullOrEmpty
+    $updated.name | Should Be "Example_HTTP_Source_Modified"
+    $updated.category | Should Be "category_modified"
+    $updated.hostName | Should Be "hostname_modified"
+  }
 }
