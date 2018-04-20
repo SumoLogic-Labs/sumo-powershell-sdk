@@ -74,6 +74,8 @@
   NestedModules = @(
     'CollectorManagement/Get-Collector.ps1'
     'CollectorManagement/Get-Source.ps1'
+    'CollectorManagement/Get-UpgradeableCollector.ps1'
+    'CollectorManagement/Get-UpgradeVersion.ps1'
     'CollectorManagement/New-Collector.ps1'
     'CollectorManagement/New-Source.ps1'
     'CollectorManagement/Remove-Collector.ps1'
@@ -90,6 +92,8 @@
     'Get-Collector'
     'Get-SearchResult'
     'Get-Source'
+    'Get-UpgradeableCollector'
+    'Get-UpgradeVersion'
     'New-Collector'
     'New-Source'
     'New-SumoSession'

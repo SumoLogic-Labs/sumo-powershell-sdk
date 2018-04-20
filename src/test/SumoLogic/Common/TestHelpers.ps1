@@ -31,7 +31,7 @@ function compareHashtables([hashtable]$lhs, [hashtable]$rhs) {
   foreach ($key in $keys) {
     if ($lhs[$key] -ne $rhs[$key]) {
       New-Object -TypeName psobject -Property @{
-        "Key"   = $prop
+        "Key"   = $key
         "Left"  = $lhs[$key]
         "Right" = $rhs[$key]
       }
@@ -61,7 +61,6 @@ function mockHttpCmdlet {
 }
 
 function cleanup {
-  New-SumoSession -AccessId $AccessId -AccessKey $AccessKey
   Get-Collector -NamePattern "PowerShell_Test.*"| Remove-Collector -Force
 }
 
@@ -97,7 +96,7 @@ function testSource($collectorId, $suffix = "") {
     "cutoffTimestamp"            = 0
     "encoding"                   = "UTF-8"
     "pathExpression"             = "/usr/logs/collector/collector.log*"
-}
+  }
   $res = New-Source -CollectorId $collectorId -Source $obj
   $res | Should Not BeNullOrEmpty
   $res
