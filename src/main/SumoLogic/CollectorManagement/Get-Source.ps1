@@ -11,47 +11,32 @@ function Get-Source {
   [CmdletBinding(DefaultParameterSetName = "ById")]
   param(
     $Session = $Script:sumoSession,
-    [parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+    [parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
     [alias('id')]
     [long]$CollectorId,
-    [parameter(ParameterSetName = "ById", Position = 0)]
+    [parameter(ParameterSetName = "ById", Position = 1)]
     [long]$SourceId,
-    [parameter(ParameterSetName = "ByName")]
-    [string]$NamePattern,
-    [parameter(ParameterSetName = "ByPage", Mandatory = $true)]
-    [int]$Offset,
-    [parameter(ParameterSetName = "ByPage", Mandatory = $true)]
-    [int]$Limit
+    [parameter(ParameterSetName = "ByName", Position = 1)]
+    [string]$NamePattern
   )
   process {
-    foreach ($cid in $CollectorId) {
-      switch ($PSCmdlet.ParameterSetName) {
-        "ById" {
-          if (-not ($SourceId)) {
-            $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources").sources
-          }
-          else {
-            $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources/$SourceId").source
-          }
+    switch ($PSCmdlet.ParameterSetName) {
+      "ById" {
+        if (-not ($SourceId)) {
+          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources").sources
         }
-        "ByName" {
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources").sources | Where-Object { $_.name -match [regex]$NamePattern }
-        }
-        "ByPage" {
-          $query = @{
-            'offset' = $Offset
-            'limit'  = $Limit
-          }
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$cid/sources" -content $query).sources
-        }
-
-      }
-      if ($ret) {
-        $ret | ForEach-Object {
-          Add-Member -InputObject $_ -MemberType NoteProperty -Name collectorId -Value $cid
+        else {
+          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources/$SourceId").source
         }
       }
-      $ret
+      "ByName" {
+        $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources").sources | Where-Object { $_.name -match [regex]$NamePattern }
+      }
+    }
+    if ($ret) {
+      $ret | ForEach-Object {
+        Add-Member -InputObject $_ -MemberType NoteProperty -Name collectorId -Value $CollectorId -PassThru
+      }
     }
   }
 }

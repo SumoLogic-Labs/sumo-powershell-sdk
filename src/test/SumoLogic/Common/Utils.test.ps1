@@ -2,68 +2,6 @@
 . $ModuleRoot/Lib/Definitions.ps1
 . $ModuleRoot/Lib/Utils.ps1
 
-function dotify([hashtable]$acc, $key, $value, [string]$prefix) {
-  $pk = if ($prefix) { "$prefix.$key" }  else { "$key" }
-  if ($value -is [hashtable]) {
-    $value.Keys | ForEach-Object { 
-      dotify $acc  $_  $value.Item($_) $pk
-    }
-  }
-  elseif ($value -is [array]) {
-    for ($i = 0; $i -lt $value.Count; ++$i) {
-      dotify $acc  $i $value[$i] $pk
-    }
-  }
-  elseif ($value -is [psobject]) {
-    $value.PSObject.Properties | ForEach-Object {
-      dotify $acc  $_.Name  $_.Value $pk
-    }
-  }
-  else {
-    $acc[$pk] = $value    
-  }
-}
-
-function convertToDotifyHash($in) {
-  $res = @{}
-  dotify $res "" $in $nul
-  $res
-}
-
-function compareHashtables([hashtable]$lhs, [hashtable]$rhs) {
-  $keys = $lhs.Keys + $rhs.Keys | Sort-Object | Select-Object -Unique
-  foreach ($key in $keys) {
-    if ($lhs[$key] -ne $rhs[$key]) {
-      New-Object -TypeName psobject -Property @{
-        "Key"   = $prop
-        "Left"  = $lhs[$key]
-        "Right" = $rhs[$key]
-      }
-    }
-  }
-}
-
-function comparePSObjects($lhs, $rhs) {
-  compareHashtables (convertToDotifyHash $lhs) (convertToDotifyHash $rhs)
-}
-
-function mockHttpCmdlet {
-  Param(
-    $Uri,
-    $Headers,
-    $Method,
-    $WebSession,
-    $Body
-  )
-  New-Object PSObject -Property @{
-    Uri        = $Uri
-    Headers    = $Headers
-    Method     = $Method
-    WebSession = $WebSession
-    Body       = $Body
-  }
-}
-
 Describe "getSession" {
 
   It "should get session with valid access key/id from Prod" {

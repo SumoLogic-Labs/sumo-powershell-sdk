@@ -8,7 +8,7 @@
 #>
 
 function Set-Source {
-  [CmdletBinding(SupportsShouldProcess, ConfirmImpact="Medium")]
+  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "Medium")]
   param(
     $Session = $Script:sumoSession,
     [parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -20,19 +20,20 @@ function Set-Source {
     $collectorId = $Source.collectorId
     $sourceId = $Source.id
     $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$collectorId/sources/$sourceId"
-    $etag = $org.Headers.ETag
-    $headers = @{
-      "If-Match"     = $etag[0]
-      'content-type' = 'application/json'
-      'accept'       = 'application/json'
+    if ($org -and ($Force -or $PSCmdlet.ShouldProcess("Update source $(getFullName $source) in collector $(getFullName $collector). Continue?"))) {
+      $etag = ([string[]]$org.Headers.ETag)[0]
+      $headers = @{
+        "If-Match"     = $etag
+        'content-type' = 'application/json'
+        'accept'       = 'application/json'
+      }
+      $wrapper = New-Object -TypeName psobject @{ "source" = $Source }
+      $json = ConvertTo-Json $wrapper -Depth 10
+      $ret = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$collectorId/sources/$sourceId" -body $json
     }
-    $target = ConvertFrom-Json $org.Content
-    $target.source = $Source
-    if ($Force -or $PSCmdlet.ShouldProcess("Source[$sourceId] in Collector[$collectorId] will be removed. Continue?")) {
-      $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$collectorId/sources/$sourceId" -content $target
-    }
-    if ($res -and $Passthru) {
-      ($res.source)
+    if ($ret -and $Passthru) {
+      $newSource = $ret.source
+      Add-Member -InputObject $newSource -MemberType NoteProperty -Name collectorId -Value $collectorId -PassThru
     }
   }
 }

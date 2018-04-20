@@ -1,23 +1,5 @@
 . $PSScriptRoot/../Common/Global.ps1
 
-function cleanup {
-  New-SumoSession -AccessId $AccessId -AccessKey $AccessKey
-  Get-Collector -NamePattern "PowerShell_Test.*"| Remove-Collector -Force
-}
-
-function testCollector($suffix = "") {
-  $obj = New-Object -TypeName psobject -Property @{
-    "collectorType" = "Hosted"
-    "name"          = "PowerShell_Test$suffix"
-    "description"   = "An example Hosted Collector"
-    "category"      = "HTTP Collection"
-    "timeZone"      = "UTC"
-  }
-  $res = New-Collector -Collector $obj
-  $res | Should Not BeNullOrEmpty
-  $res
-}
-
 Describe "Get-Collector" {
   $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
 

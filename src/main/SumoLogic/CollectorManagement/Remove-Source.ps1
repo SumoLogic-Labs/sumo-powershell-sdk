@@ -19,10 +19,10 @@ function Remove-Source {
     [switch]$Force
   )
   process {
-    $SourcId | ForEach-Object {
-      if ($Force -or $pscmdlet.ShouldProcess("Source[$_] in Collector[$CollectorId] will be removed. Continue?")) {
-        invokeSumoRestMethod -session $Session -method Delete -function "collectors/$CollectorId/sources/$_"
-      }
+    $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId").collector
+    $source = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources/$SourceId").source
+    if ($source -and ($Force -or $pscmdlet.ShouldProcess("Remove source $(getFullName $source) in collector $(getFullName $collector). Continue?"))) {
+      invokeSumoRestMethod -session $Session -method Delete -function "collectors/$CollectorId/sources/$_"
     }
   }
 }
