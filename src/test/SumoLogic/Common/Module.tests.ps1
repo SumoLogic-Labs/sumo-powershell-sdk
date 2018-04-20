@@ -9,7 +9,7 @@ Describe "$($ModuleName) Module" {
   }
 
   It "should contains expected commands" {
-    $exportedCommands.Length | Should Be 10
+    $exportedCommands.Length | Should Be 11
   }
 
   Foreach ($command in $exportedCommands) {
