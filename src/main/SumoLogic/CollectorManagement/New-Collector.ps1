@@ -1,10 +1,33 @@
 <#
 .SYNOPSIS
-    Collector
+Create a hosted collector
+
 .DESCRIPTION
-    Create collector/s.
+Create a new hosted collector with json string or PSObject with collector definition
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER Collector
+A PSObject contains collector definition
+
+.PARAMETER Json
+A string contains collector definition in json format
+
 .EXAMPLE
-    New-Collector
+New-Collector -Collector $collector
+Create a collector with the definition in $collector
+
+.EXAMPLE
+Get-Content collector.json -Raw | New-Collector
+Create a collector with the definition in collector.json
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+Only "Hosted" collector can be created with API
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function New-Collector {

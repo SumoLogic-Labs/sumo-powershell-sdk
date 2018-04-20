@@ -1,10 +1,39 @@
 <#
 .SYNOPSIS
-    Source
+Get the information of source(s)
+
 .DESCRIPTION
-    Get sources.
+Get the information of source(s) based on collector id and source id or source name pattern
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER CollectorId
+The id of collector in long
+
+.PARAMETER SourceId
+The id of source in long
+
+.PARAMETER NamePattern
+A string contains a regular expression which used to search source(s) by name
+
 .EXAMPLE
-    Get-Source
+Get-Source -CollectorId 12345
+Get all sources for collector with id 12345
+
+.EXAMPLE
+Get-Source -CollectorId 12345 -NamePattern "Web Log File"
+Get source(s) which name contains "Web Log File" and in collector with id 12345
+
+.EXAMPLE
+Get-Collector -NamePattern "IIS" | Get-Source -NamePattern "Web Log File"
+Get all sources which name contains "Web Log File" in all collector(s) wich name contains "IIS"
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function Get-Source {

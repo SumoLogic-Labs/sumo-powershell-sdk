@@ -1,10 +1,35 @@
 <#
 .SYNOPSIS
-    Source
+Create a source in specific collector
+
 .DESCRIPTION
-    Create sources.
+Create a new source in specific collector with json string or PSObject with source definition
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER CollectorId
+The id of collector in long
+
+.PARAMETER Source
+A PSObject contains source definition
+
+.PARAMETER Json
+A string contains source definition in json format
+
 .EXAMPLE
-    New-Source
+New-Source -CollectorId 12345 -Source $source
+Create a source under collector 12345 with the definition in $source
+
+.EXAMPLE
+Get-Content source.json -Raw | New-Source -CollectorId 12345 
+Create a source under collector 12345 with the definition in source.json
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/Source-API
 #>
 
 function New-Source {

@@ -1,10 +1,30 @@
 <#
 .SYNOPSIS
-    Collector
+Update the properties of a collector
+
 .DESCRIPTION
-    Set collector/s info.
+Update the properties of a collector with fields in PSObject
+
+.PARAMETER Session
+An instance of SumoAPISession which contains API endpoint and credential
+
+.PARAMETER Collector
+A PSObject contains collector definition
+
 .EXAMPLE
-    Set-Collector
+Set-Collector -Collector $collector
+Update collector with the properties in $collector
+
+.EXAMPLE
+Set-Collector -Collector $collector -Passthru
+Update collector with the properties in $collector and return the updated result from server
+
+.NOTES
+You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+The input collector must contains a valid id field
+
+.LINK
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function Set-Collector {

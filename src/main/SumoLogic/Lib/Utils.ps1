@@ -162,7 +162,7 @@ function convertCollectorToJson([psobject]$collector) {
   $propNames = $collector.PSObject.Properties | ForEach-Object { $_.Name }
   $propNames | ForEach-Object {
     if (!($_ -in $validProperties)) {
-      Write-Warning "Property [$_] in input collector is removed."
+      Write-Verbose "Property [$_] in input collector is removed."
       $collector.PSObject.Properties.Remove($_)
     }
   }
@@ -179,7 +179,7 @@ function convertSourceToJson([psobject]$source) {
   $propNames = $source.PSObject.Properties | ForEach-Object { $_.Name }
   $propNames | ForEach-Object {
     if ($_ -in $removeProperties) {
-      Write-Warning "Property [$_] in input source is removed."
+      Write-Verbose "Property [$_] in input source is removed."
       $source.PSObject.Properties.Remove($_)
     }
   }
