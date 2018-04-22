@@ -50,10 +50,10 @@ function New-Collector {
       }
     }
     if ($Force -or $PSCmdlet.ShouldProcess("Create $($Collector.type) collector with name $($Collector.name). Continue?")) {
-      $ret = invokeSumoRestMethod -session $Session -method Post -function "collectors" -body $Json
+      $res = invokeSumoRestMethod -session $Session -method Post -function "collectors" -body $Json
     }
-    if ($ret) {
-      $ret.collector
+    if ($res) {
+      $res.collector
     }
   }
 }

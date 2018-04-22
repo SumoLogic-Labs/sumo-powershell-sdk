@@ -39,6 +39,10 @@ function Set-Source {
   process {
     $collectorId = $Source.collectorId
     $sourceId = $Source.id
+    $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$collectorId").collector
+    if (!$collector) {
+      Write-Error "Cannot get collector with id $collectorId"
+    }
     $org = invokeSumoWebRequest -session $Session -method Get -function "collectors/$collectorId/sources/$sourceId"
     if ($org -and ($Force -or $PSCmdlet.ShouldProcess("Update source $(getFullName $source) in collector $(getFullName $collector). Continue?"))) {
       $etag = ([string[]]$org.Headers.ETag)[0]
@@ -49,10 +53,10 @@ function Set-Source {
       }
       $wrapper = New-Object -TypeName psobject @{ "source" = $Source }
       $json = ConvertTo-Json $wrapper -Depth 10
-      $ret = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$collectorId/sources/$sourceId" -body $json
+      $res = invokeSumoRestMethod -session $Session -headers $headers -method Put -function "collectors/$collectorId/sources/$sourceId" -body $json
     }
-    if ($ret -and $Passthru) {
-      $newSource = $ret.source
+    if ($res -and $Passthru) {
+      $newSource = $res.source
       Add-Member -InputObject $newSource -MemberType NoteProperty -Name collectorId -Value $collectorId -PassThru
     }
   }

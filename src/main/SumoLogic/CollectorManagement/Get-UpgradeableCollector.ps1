@@ -39,14 +39,15 @@ https://help.sumologic.com/APIs/01Collector-Management-API/
 function Get-UpgradeableCollector {
   param(
     [SumoAPISession]$Session = $sumoSession,
-    [string]$TargetVersion,
+    [string]$TargetVersion = $null,
     [int]$Offset,
     [int]$Limit
   )
   [hashtable]$query = @{}
-  if ($TargetVersion) {
-    $query.Add("toVersion", $TargetVersion)
+  if (!$TargetVersion) {
+    $TargetVersion = Get-UpgradeVersion
   }
+  $query.Add("toVersion", $TargetVersion)
   if ($Limit -gt 0) {
     $query.Add("offset", $Offset)
     $query.Add("limit", $Limit)

@@ -14,3 +14,4 @@ Import-Module $ModuleRoot -Force
 # To run full set of test, uncomment following lines and fill with real access id/key from Sumo Logic
 # $Global:AccessId = 
 # $Global:AccessKey = 
+# New-SumoSession -AccessId $AccessId -AccessKey $AccessKey | Out-Null

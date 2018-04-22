@@ -76,12 +76,15 @@
     'CollectorManagement/Get-Source.ps1'
     'CollectorManagement/Get-UpgradeableCollector.ps1'
     'CollectorManagement/Get-UpgradeVersion.ps1'
+    'CollectorManagement/Get-UpgradeTask.ps1'
     'CollectorManagement/New-Collector.ps1'
     'CollectorManagement/New-Source.ps1'
     'CollectorManagement/Remove-Collector.ps1'
     'CollectorManagement/Remove-Source.ps1'
     'CollectorManagement/Set-Collector.ps1'
     'CollectorManagement/Set-Source.ps1'
+    'CollectorManagement/Submit-UpgradeTask.ps1'
+    'CollectorManagement/Wait-UpgradeTask.ps1'
     'Common/New-SumoSession.ps1'
     'SearchJob/Get-SearchResult.ps1'
     'SearchJob/Start-SearchJob.ps1'
@@ -93,6 +96,7 @@
     'Get-SearchResult'
     'Get-Source'
     'Get-UpgradeableCollector'
+    'Get-UpgradeTask'
     'Get-UpgradeVersion'
     'New-Collector'
     'New-Source'
@@ -102,6 +106,8 @@
     'Set-Collector'
     'Set-Source'
     'Start-SearchJob'
+    'Submit-UpgradeTask'
+    'Wait-UpgradeTask'
   )
 
   # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

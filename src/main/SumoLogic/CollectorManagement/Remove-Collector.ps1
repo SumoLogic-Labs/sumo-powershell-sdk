@@ -32,6 +32,9 @@ function Remove-Collector {
   )
   process {
     $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$Id").collector
+    if (!$collector) {
+      Write-Error "Cannot get collector with id $Id"
+    }
     if ($collector -and ($Force -or $pscmdlet.ShouldProcess("Remove collector $(getFullName $collector). Continue?"))) {
       invokeSumoRestMethod -session $Session -method Delete -function "collectors/$Id"
     }
