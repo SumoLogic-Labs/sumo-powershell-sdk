@@ -3,10 +3,6 @@
 Describe "Get-Collector" {
   $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
 
-  BeforeAll {
-    New-SumoSession -AccessId $AccessId -AccessKey $AccessKey
-  }
-
   BeforeEach {
     cleanup
   }

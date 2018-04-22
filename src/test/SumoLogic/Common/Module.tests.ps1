@@ -9,10 +9,10 @@ Describe "$($ModuleName) Module" {
   }
 
   It "should contains expected commands" {
-    $exportedCommands.Length | Should Be 11
+    $exportedCommands.Length | Should Be 16
   }
 
-  Foreach ($command in $exportedCommands) {
+  foreach ($command in $exportedCommands) {
     Context $command {
       It "should have proper help" {
         $help = Get-Help $command.Name

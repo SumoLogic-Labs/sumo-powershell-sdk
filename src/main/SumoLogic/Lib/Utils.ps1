@@ -25,8 +25,7 @@ function getSession([System.Management.Automation.PSCredential]$credential) {
       Write-Verbose "An error occurred when calling $apiEndpoint."
     }
   }
-  Write-Verbose "$err"
-  return $null
+  $err | ForEach-Object { Write-Error $_ }
 } 
 function getHex([long]$id) {
   "{0:X16}" -f $id
@@ -74,7 +73,8 @@ function invokeSumoAPI([SumoAPISession]$session,
       $qStr = getQueryString($query)
       $url += "?" + $qStr
     }
-    & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body
+    & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
+    $err | ForEach-Object { Write-Error $_ }
   }
 
 function invokeSumoWebRequest([SumoAPISession]$session,
@@ -123,7 +123,7 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
   if ($limit -and ($limit -lt $total)) {
     $total = $limit
   }
-  $ret = @()
+  $res = @()
   $page = 100
   $offset = 0
   while ($offset -le $total) {
@@ -139,13 +139,13 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
       $set = $res.messages
     }
     foreach ($entry in $set) {
-      $ret += $entry.map
+      $res += $entry.map
     }
     $text = "Downloaded {0} of {1} {2}" -f $offset, $total, $ttype
     Write-Progress -Activity "Downloading Result" -Status $text -PercentComplete ($offset / $total * 100)
     $offset += $page
   }
-  $ret
+  $res
 }
 
 function convertCollectorToJson([psobject]$collector) {
@@ -185,4 +185,69 @@ function convertSourceToJson([psobject]$source) {
   }
   $wrapper = New-Object -TypeName psobject @{ "source" = $source }
   ConvertTo-Json $wrapper -Depth 10
+}
+
+function writeCollectorUpgradeStatus($collector, $upgrade) {
+  getFullName $collector | Write-Host -NoNewline -ForegroundColor White
+  if ($collector.alive) {
+    "(alive) " | Write-Host -NoNewline -ForegroundColor Green
+  } else {
+    "(connection lost) " | Write-Host -NoNewline -ForegroundColor Red
+  }
+  if ((get-host).UI.RawUI.MaxWindowSize.Width -ge 150) {
+    "on $($collector.osName)($($collector.osVersion)) $($collector.collectorVersion)=>$($upgrade.toVersion); " | Write-Host -NoNewline -ForegroundColor Gray
+  }
+  "STATUS: " | Write-Host -NoNewline -ForegroundColor White
+  switch($upgrade.status) {
+    0 {
+      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor White
+    }
+    1 {
+      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor Blue
+    }
+    2 {
+      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor Green
+    }
+    3 {
+      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor Red
+    }
+    6 {
+      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor DarkBlue
+    }
+  }
+}
+
+function getCollectorUpgradeStatus($collector, $upgrade) {
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name collectorName -Value $collector.name
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name osName -Value $collector.osName
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name osVersion -Value $collector.osVersion
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name collectorVersion -Value $collector.collectorVersion
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name alive -Value $collector.alive
+  $requestTime = $upgrade.requestTime
+  $upgrade.PSObject.Properties.Remove("requestTime")
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name requestTime -Value (getDotNetDateTime $requestTime)
+  $message = getStatusMessage $upgrade
+  $upgrade.PSObject.Properties.Remove("message")
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name message -Value $message
+  $upgrade
+}
+
+function getStatusMessage($upgrade) {
+  switch($upgrade.status) {
+    0 {
+      "Not started"
+    }
+    1 {
+      "Preparing to upgrade collector"
+    }
+    2 {
+      "Upgrade completed and success "
+    }
+    3 {
+      "Upgrade failed ($($upgrade.message))"
+    }
+    6 {
+     "Working on upgrade collector   "
+    }
+  }
 }

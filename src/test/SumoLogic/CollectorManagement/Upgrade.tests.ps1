@@ -3,10 +3,6 @@
 Describe "Get-UpgradeVersion" {
   $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
 
-  BeforeAll {
-    New-SumoSession -AccessId $AccessId -AccessKey $AccessKey
-  }
-
   It "should get the latest version string" {
     $res = Get-UpgradeVersion
     $res | Should Not BeNullOrEmpty
@@ -24,10 +20,6 @@ Describe "Get-UpgradeVersion" {
 }
 
 Describe "Get-UpgradeableCollector" {
-
-  BeforeAll {
-    New-SumoSession -AccessId $AccessId -AccessKey $AccessKey
-  }
 
   It "should call sumo API with query strings" {
     Mock invokeSumoRestMethod -Verifiable { 

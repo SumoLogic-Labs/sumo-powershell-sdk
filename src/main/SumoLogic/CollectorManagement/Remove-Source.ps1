@@ -38,6 +38,9 @@ function Remove-Source {
   )
   process {
     $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId").collector
+    if (!$collector) {
+      Write-Error "Cannot get collector with id $CollectorId"
+    }
     $source = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources/$SourceId").source
     if ($source -and ($Force -or $pscmdlet.ShouldProcess("Remove source $(getFullName $source) in collector $(getFullName $collector). Continue?"))) {
       invokeSumoRestMethod -session $Session -method Delete -function "collectors/$CollectorId/sources/$SourceId"

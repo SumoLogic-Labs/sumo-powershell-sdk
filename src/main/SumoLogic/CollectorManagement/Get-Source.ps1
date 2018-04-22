@@ -52,18 +52,18 @@ function Get-Source {
     switch ($PSCmdlet.ParameterSetName) {
       "ById" {
         if (-not ($SourceId)) {
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources").sources
+          $res = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources").sources
         }
         else {
-          $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources/$SourceId").source
+          $res = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources/$SourceId").source
         }
       }
       "ByName" {
-        $ret = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources").sources | Where-Object { $_.name -match [regex]$NamePattern }
+        $res = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId/sources").sources | Where-Object { $_.name -match [regex]$NamePattern }
       }
     }
-    if ($ret) {
-      $ret | ForEach-Object {
+    if ($res) {
+      $res | ForEach-Object {
         Add-Member -InputObject $_ -MemberType NoteProperty -Name collectorId -Value $CollectorId -PassThru
       }
     }

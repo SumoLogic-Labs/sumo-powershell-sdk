@@ -29,7 +29,7 @@ Create a source under collector 12345 with the definition in source.json
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
 .LINK
-https://help.sumologic.com/APIs/01Collector-Management-API/Source-API
+https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
 function New-Source {
@@ -47,6 +47,9 @@ function New-Source {
   )
   process {
     $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$CollectorId").collector
+    if (!$collector) {
+      Write-Error "Cannot get collector with id $CollectorId"
+    }
     switch ($PSCmdlet.ParameterSetName) {
       "ByObject" {
         $Json = convertSourceToJson($Source)
@@ -56,10 +59,10 @@ function New-Source {
       }
     }
     if ($collector -and ($Force -or $PSCmdlet.ShouldProcess("Create $($Source.sourceType) source with name $($Source.name) in collector $(getFullName $collector)]. Continue?"))) {
-      $ret = invokeSumoRestMethod -session $Session -method Post -function "collectors/$collectorId/sources" -body $Json
+      $res = invokeSumoRestMethod -session $Session -method Post -function "collectors/$collectorId/sources" -body $Json
     }
-    if ($ret) {
-      $newSource = $ret.source
+    if ($res) {
+      $newSource = $res.source
       Add-Member -InputObject $newSource -MemberType NoteProperty -Name collectorId -Value $CollectorId -PassThru
     }
   }

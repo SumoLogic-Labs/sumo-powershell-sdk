@@ -3,7 +3,9 @@
 $scriptSources = Get-ChildItem -Path $ModuleRoot -Filter '*.ps1' -Recurse
 Import-Module PSScriptAnalyzer
 $exceptionList = @{
-  "New-SumoSession.ps1" = "PSAvoidUsingConvertToSecureStringWithPlainText";
+  "New-SumoSession.ps1" = "PSAvoidUsingConvertToSecureStringWithPlainText"
+  "Utils.ps1" = "PSAvoidUsingWriteHost"
+  "Wait-UpgradeTask.ps1" = "PSAvoidUsingWriteHost"
 }
 function inExceptionList($record) {
   Write-Host "$($record.ScriptName)(LN:$($record.Line)) - $($record.Severity):$($record.RuleName)"
