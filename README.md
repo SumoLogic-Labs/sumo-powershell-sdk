@@ -15,9 +15,8 @@ It is free and open sourced, subject to the terms of the Apache 2.0 license.
 * Install module:
 ```PowerShell
 PS> Install-Module $gitrepo/src/main/SumoLogic -Force # From local clone
-* Or, install remotely from PowerShell Gallery:
-```
-PS> 
+PS> Save-Module -Name SumoLogic -Path <path> # Or, install remotely from PowerShell Gallery
+PS> Install-Module -Name SumoLogic
 ```
 __NOTE__: This module requires PowerShell Core 6.0 or higher to work.
 
