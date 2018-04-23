@@ -29,7 +29,7 @@ function convertToDotifyHash($in) {
 function compareHashtables([hashtable]$lhs, [hashtable]$rhs) {
   $keys = $lhs.Keys + $rhs.Keys | Sort-Object | Select-Object -Unique
   foreach ($key in $keys) {
-    if ($lhs[$key] -ne $rhs[$key]) {
+    if ("$($lhs[$key])" -ne "$($rhs[$key])") {
       New-Object -TypeName psobject -Property @{
         "Key"   = $key
         "Left"  = $lhs[$key]
