@@ -13,7 +13,7 @@ The id of upgrade task in long
 
 .EXAMPLE
 Get-UpgradeTask -Id 78912
-Get upgrade status for the task 78912 (which from the result of Submit-UpgradeTask cmdlet)
+Get upgrade status for the task 78912 (which from the result of Start-UpgradeTask cmdlet)
 
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter

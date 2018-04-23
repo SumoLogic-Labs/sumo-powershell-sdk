@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Submit a collector upgrade task request
+Start a collector upgrade task request
 
 .DESCRIPTION
-Submit a collector upgrade task to upgrade collector(s) to another version
+Start a collector upgrade task to upgrade collector(s) to another version
 
 .PARAMETER Session
 An instance of SumoAPISession which contains API endpoint and credential
@@ -15,11 +15,11 @@ The id of collector in long
 A string contains collector version want upgrade/downgrade to
 
 .EXAMPLE
-Submit-UpgradeTask -CollectorId 12345 -ToVersion 19.208-19
+Start-UpgradeTask -CollectorId 12345 -ToVersion 19.208-19
 Submit a collector upgrade task request for upgrading collector with id 12345 to version 19.209-19
 
 .EXAMPLE
-Get-UpgradeableCollector | Submit-UpgradeTask
+Get-UpgradeableCollector | Start-UpgradeTask
 Submit upgrade tasks for upgrading all collectors in current orgnization to latest version
 
 .NOTES
@@ -29,7 +29,7 @@ You can pre-load the API credential with New-SumoSession cmdlet in script or pas
 https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 
-function Submit-UpgradeTask {
+function Start-UpgradeTask {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "Medium")]
   param(
     [SumoAPISession]$Session = $sumoSession,
