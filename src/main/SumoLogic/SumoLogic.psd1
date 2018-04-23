@@ -83,7 +83,7 @@
     'CollectorManagement/Remove-Source.ps1'
     'CollectorManagement/Set-Collector.ps1'
     'CollectorManagement/Set-Source.ps1'
-    'CollectorManagement/Submit-UpgradeTask.ps1'
+    'CollectorManagement/Start-UpgradeTask.ps1'
     'CollectorManagement/Wait-UpgradeTask.ps1'
     'Common/New-SumoSession.ps1'
     'SearchJob/Get-SearchResult.ps1'
@@ -106,7 +106,7 @@
     'Set-Collector'
     'Set-Source'
     'Start-SearchJob'
-    'Submit-UpgradeTask'
+    'Start-UpgradeTask'
     'Wait-UpgradeTask'
   )
 

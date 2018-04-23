@@ -57,6 +57,30 @@ Describe "Get-UpgradeableCollector" {
   }
 }
 
+Describe "Start-UpgradeTask" {
+
+  It "should call sumo API" {
+    Mock invokeSumoRestMethod -Verifiable { 
+      New-Object -TypeName psobject -Property @{
+        "collector" = @{}
+      }
+    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/7" }
+    Mock invokeSumoRestMethod -Verifiable {
+      New-Object -TypeName psobject -Property @{
+        "id" = 3
+      }
+    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/upgrades" }
+    Mock invokeSumoRestMethod -Verifiable {
+      New-Object -TypeName psobject -Property @{
+        "upgrade" = @{}
+      }
+    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/upgrades/3" }
+    Mock getCollectorUpgradeStatus -Verifiable {} -ModuleName "SumoLogic"
+    Start-UpgradeTask -CollectorId 7
+    Assert-MockCalled getCollectorUpgradeStatus -Exactly 1 -Scope It -ModuleName "SumoLogic"     
+  }
+}
+
 Describe "Get-UpgradeTask" {
 
   It "should get upgrade status as expected" {

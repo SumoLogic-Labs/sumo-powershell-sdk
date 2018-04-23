@@ -22,11 +22,11 @@ Wait-UpgradeTask -Id 78912
 Blocking current session until the upgrade task 78912 complete and return the result
 
 .EXAMPLE
-Submit-UpgradeTask -CollectorId 12345 -Version 19.216-22 | Wait-UpgradeTask
+Start-UpgradeTask -CollectorId 12345 -Version 19.216-22 | Wait-UpgradeTask
 Submit upgrade request on collector 12345 to version 19.216-22 and wait it complete
 
 .EXAMPLE
-Get-UpgradeableCollector | Submit-UpgradeTask | Wait-UpgradeTask
+Get-UpgradeableCollector | Start-UpgradeTask | Wait-UpgradeTask
 Submit upgrade requests on all available collectors to latest version and wait them complete
 
 .NOTES
