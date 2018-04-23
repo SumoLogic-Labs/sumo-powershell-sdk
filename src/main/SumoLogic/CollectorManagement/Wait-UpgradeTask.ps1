@@ -11,9 +11,23 @@ An instance of SumoAPISession which contains API endpoint and credential
 .PARAMETER UpgradeId
 The id of upgrade task in long
 
+.PARAMETER RefreshMs
+The interval of refreshing status in milliseconds, default is 500
+
+.PARAMETER Quiet
+If set, the status of upgrade will not be printed on console
+
 .EXAMPLE
 Wait-UpgradeTask -Id 78912
 Blocking current session until the upgrade task 78912 complete and return the result
+
+.EXAMPLE
+Submit-UpgradeTask -CollectorId 12345 -Version 19.216-22 | Wait-UpgradeTask
+Submit upgrade request on collector 12345 to version 19.216-22 and wait it complete
+
+.EXAMPLE
+Get-UpgradeableCollector | Submit-UpgradeTask | Wait-UpgradeTask
+Submit upgrade requests on all available collectors to latest version and wait them complete
 
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
@@ -29,31 +43,22 @@ function Wait-UpgradeTask {
     [alias('id')]
     [long]$UpgradeId,
     [long]$RefreshMs = 500,
-    [switch]$Quiet,
-    [switch]$Passthru
+    [switch]$Quiet
   )
-  $counter = 0
-  $spinner = "|", "/", "-", "\"
-  do {
-    $counter++
-    $upgrade = (invokeSumoRestMethod -session $Session -method Get -function "collectors/upgrades/$UpgradeId").upgrade
-    if (!$upgrade) {
-      Write-Error "Cannot get upgrade with id $UpgradeId"
-      return
-    }
-    $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$($upgrade.collectorId)").collector
-    if (!$collector) {
-      Write-Error "Cannot get collector with id $($upgrade.collectorId)"
-      return
-    }
-    if (-not $Quiet) {
-      Write-Host -NoNewLine -ForegroundColor Cyan -Object "`r$($spinner[$counter % 4]) "
-      writeCollectorUpgradeStatus $collector $upgrade
-    }
-    Start-Sleep -Milliseconds $RefreshMs
-  } while ($collector -and $upgrade -and $upgrade.status -ne 2 -and $upgrade.status -ne 3)
-  
-  if ($collector -and $upgrade -and $Passthru) {
-    getCollectorUpgradeStatus -collector $collector -upgrade $upgrade
+  begin {
+    $ids = @()
   }
+  process {
+    $ids += $UpgradeId
+  }
+  end {
+    if ($ids.Count -eq 1) {
+      waitForSingleUpgrade -Session $Session -UpgradeId $ids[0] -RefreshMs $RefreshMs -$Quiet $Quiet
+    } else {
+      waitForMultipleUpgrades -Session $Session -UpgradeIds $ids -RefreshMs $RefreshMs -$Quiet $Quiet
+    }
+    $ids | ForEach-Object {
+      Get-UpgradeTask -Session $Session -UpgradeId $_
+    }
+  }  
 }

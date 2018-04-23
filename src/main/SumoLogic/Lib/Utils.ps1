@@ -212,7 +212,7 @@ function writeCollectorUpgradeStatus($collector, $upgrade) {
       getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor Red
     }
     6 {
-      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor DarkBlue
+      getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor Cyan
     }
   }
 }
@@ -226,6 +226,8 @@ function getCollectorUpgradeStatus($collector, $upgrade) {
   $requestTime = $upgrade.requestTime
   $upgrade.PSObject.Properties.Remove("requestTime")
   Add-Member -InputObject $upgrade -MemberType NoteProperty -Name requestTime -Value (getDotNetDateTime $requestTime)
+  $lastSeenAlive = $collector.lastSeenAlive
+  Add-Member -InputObject $upgrade -MemberType NoteProperty -Name lastHeartbeat -Value (getDotNetDateTime $lastSeenAlive)
   $message = getStatusMessage $upgrade
   $upgrade.PSObject.Properties.Remove("message")
   Add-Member -InputObject $upgrade -MemberType NoteProperty -Name message -Value $message
@@ -250,4 +252,70 @@ function getStatusMessage($upgrade) {
      "Working on upgrade collector   "
     }
   }
+}
+
+function waitForSingleUpgrade([SumoAPISession]$Session, [long]$UpgradeId, [long]$RefreshMs, [switch]$Quiet) {
+  $counter = 0
+  $spinner = "|", "/", "-", "\"
+  do {
+    $counter++
+    $upgrade = (invokeSumoRestMethod -session $Session -method Get -function "collectors/upgrades/$UpgradeId").upgrade
+    if (!$upgrade) {
+      Write-Error "Cannot get upgrade with id $UpgradeId"
+      return
+    }
+    $collector = (invokeSumoRestMethod -session $Session -method Get -function "collectors/$($upgrade.collectorId)").collector
+    if (!$collector) {
+      Write-Error "Cannot get collector with id $($upgrade.collectorId)"
+      return
+    }
+    if (-not $Quiet) {
+      Write-Host -NoNewLine -ForegroundColor Cyan -Object "`r$($spinner[$counter % 4]) "
+      writeCollectorUpgradeStatus $collector $upgrade
+    }
+    Start-Sleep -Milliseconds $RefreshMs
+  } while ($collector -and $upgrade -and $upgrade.status -ne 2 -and $upgrade.status -ne 3)
+}
+
+function waitForMultipleUpgrades([SumoAPISession]$Session, [array]$UpgradeIds, [long]$RefreshMs, [switch]$Quiet) {
+  [array]$completed = @()
+  $counter = 0
+  $succeed = 0
+  $failed = 0
+  $na = 0
+  $spinner = "|", "/", "-", "\"
+  do {
+    $counter++
+    foreach($upgradeId in $UpgradeIds) {
+      if ($completed -contains $upgradeId) {
+        continue
+      }
+      $upgrade = (invokeSumoRestMethod -session $Session -method Get -function "collectors/upgrades/$upgradeId").upgrade
+      if (!$upgrade) {
+        Write-Warning "Cannot get upgrade with id $upgradeId"
+        $completed += $upgradeId
+        $na++
+      } elseif ($upgrade.status -eq 2) {
+        $completed += $upgradeId
+        $succeed++
+      } elseif ($upgrade.status -eq 3) {
+        $completed += $upgradeId
+        $failed++
+      }
+    }
+    if (-not $Quiet) {
+      Write-Host -NoNewLine -ForegroundColor Cyan -Object "`r$($spinner[$counter % 4]) "
+      "Upgrade STATUS - Total: " | Write-Host -NoNewLine -ForegroundColor Gray
+      $UpgradeIds.Count | Write-Host -NoNewLine -ForegroundColor White
+      " - Running: " | Write-Host -NoNewLine -ForegroundColor Gray
+      $UpgradeIds.Count - $failed - $succeed - $na | Write-Host -NoNewLine -ForegroundColor Cyan
+      ", Succeed: " | Write-Host -NoNewLine -ForegroundColor Gray
+      $succeed | Write-Host -NoNewLine -ForegroundColor Green
+      ", Failed: " | Write-Host -NoNewLine -ForegroundColor Gray
+      $failed | Write-Host -NoNewLine -ForegroundColor Red
+      ", N/A: " | Write-Host -NoNewLine -ForegroundColor Gray
+      "$na      " | Write-Host -NoNewLine -ForegroundColor Yellow
+    }
+    Start-Sleep -Milliseconds $RefreshMs
+  } while ($completed.Length -lt $UpgradeIds.Length)  
 }
