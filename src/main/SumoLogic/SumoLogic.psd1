@@ -54,15 +54,10 @@
   # RequiredModules = @()
 
   # Assemblies that must be loaded prior to importing this module
-  RequiredAssemblies = @(
-    'Microsoft.PowerShell.Commands.Utility.dll'
-  )
+  # RequiredAssemblies = @()
 
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-  ScriptsToProcess = @(
-    'Lib/Definitions.ps1'
-    'Lib/Utils.ps1'
-  )
+  # ScriptsToProcess = @()
 
   # Type files (.ps1xml) to be loaded when importing this module
   # TypesToProcess = @()
@@ -134,19 +129,19 @@
     PSData = @{
 
       # Tags applied to this module. These help with module discovery in online galleries.
-      # Tags = @()
+      Tags = @('Log', 'SumoLogic', 'SDK', 'Collector', 'Management', 'API')
 
       # A URL to the license for this module.
-      # LicenseUri = ''
+      LicenseUri = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/LICENSE'
 
       # A URL to the main website for this project.
-      # ProjectUri = ''
+      ProjectUri = 'https://github.com/SumoLogic/sumo-powershell-sdk/'
 
       # A URL to an icon representing this module.
-      # IconUri = ''
+      IconUri = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/icon.png'
 
       # ReleaseNotes of this module
-      # ReleaseNotes = ''
+      ReleaseNotes = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/CHANGELOG.md'
 
     } # End of PSData hashtable
 
