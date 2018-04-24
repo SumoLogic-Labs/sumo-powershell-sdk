@@ -1,6 +1,6 @@
-# Sumo Logic PowerShell SDK
-
-This is a community-supported Windows PowerShell Module to work with the Sumo Logic [REST API](https://help.sumologic.com/APIs).
+# SumoLogic PowerShell Core Module
+The PowerShell Core module for managing collectors/sources, upgrading collectors, searching logs, etc.
+This is a community-supported PowerShell Core module forked from https://github.com/SumoLogic/sumo-powershell-sdk and working with SumoLogic [REST API](https://help.sumologic.com/APIs).
 It is free and open sourced, subject to the terms of the Apache 2.0 license.
 
 | TLS Deprecation Notice |
@@ -14,25 +14,24 @@ It is free and open sourced, subject to the terms of the Apache 2.0 license.
 * Create an access Id/Key pair following this [instruction](https://help.sumologic.com/Manage/Security/Access_Keys)
 * Record the access Id/Key; they will be used to authenticate to Sumo Logic web service when creating session.
 
-### 2. Install Cmdlet module to your machine
-* Install [PowerShell Core 6.0](https://github.com/PowerShell/PowerShell)
+### 2. Install PowerShell module to your machine
+* Install [PowerShell Core](https://github.com/PowerShell/PowerShell) 6.0 or higher. 
 * Install module:
 ```PowerShell
-PS> Install-Module $gitrepo/src/main/SumoLogic -Force # From local clone
-PS> Save-Module -Name SumoLogic -Path <path> # Or, install remotely from PowerShell Gallery
-PS> Install-Module -Name SumoLogic
+# From local github clone
+PS> Import-Module $repo/src/main/SumoLogic-Core
+# Download and install remotely from PowerShell Gallery
+PS> Save-Module -Name SumoLogic-Core -Path <path> # Save locally
+PS> Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator priveldge
 ```
-__NOTE__: This module requires PowerShell Core 6.0 or higher to work.
-
 ### 3. Start to use cmdlets
 ```PowerShell
-PS> Get-Command -Module SumoLogic # Navigate all commands in the module:
+PS> Get-Command -Module SumoLogic-Core # Navigate all commands in the module
 PS> Get-Help Get-Collector -Full # Get help and samples for cmdlets
 PS> New-SumoSession -AccessId xxx -AccessKey xxxxxxxx # Creating session
 PS> Get-Collector # List all collectors
+...
 ```
 
 ## Issues and Feature Request
 Report any issue or idea through [Git Hub](https://github.com/SumoLogic/sumo-powershell-sdk)
-
-## Run unit tests

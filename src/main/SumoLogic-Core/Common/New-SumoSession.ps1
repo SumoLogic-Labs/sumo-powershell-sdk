@@ -15,7 +15,7 @@ function New-SumoSession {
     [parameter(ParameterSetName = "ByAccessKey", Mandatory = $true)]
     [string]$AccessId,
     [parameter(ParameterSetName = "ByAccessKey", Mandatory = $true)]
-    [string]$AccessKey,
+    [SecureString]$AccessKeyAsSecureString,
     [switch]$ForceUpdate
   )
   begin {
@@ -29,8 +29,7 @@ function New-SumoSession {
   }
   process {
     if ("ByAccessKey" -eq $PSCmdlet.ParameterSetName) {
-      $secpasswd = ConvertTo-SecureString $AccessKey -AsPlainText -Force
-      $Credential = New-Object System.Management.Automation.PSCredential ($AccessId, $secpasswd)
+      $Credential = New-Object System.Management.Automation.PSCredential ($AccessId, $AccessKeyAsSecureString)
     }
     $session = getSession $Credential
     $session

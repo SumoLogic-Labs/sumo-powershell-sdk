@@ -1,7 +1,7 @@
 . $PSScriptRoot/../Common/Global.ps1
 
 Describe "Get-Source" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
@@ -44,7 +44,7 @@ Describe "Get-Source" {
 }
 
 Describe "New-Source" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
@@ -140,7 +140,7 @@ Describe "New-Source" {
 }
 
 Describe "Remove-Source" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
@@ -172,7 +172,7 @@ Describe "Remove-Source" {
 }
 
 Describe "Set-Source" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup

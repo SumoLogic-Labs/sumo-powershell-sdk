@@ -1,7 +1,7 @@
 . $PSScriptRoot/../Common/Global.ps1
 
 Describe "Get-UpgradeVersion" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   It "should get the latest version string" {
     $res = Get-UpgradeVersion
@@ -31,7 +31,7 @@ Describe "Get-UpgradeableCollector" {
           "method"   = $method
         }
       }
-    } -ModuleName "SumoLogic"
+    } -ModuleName $ModuleName
     $res = Get-UpgradeableCollector
     $res | Should Not BeNullOrEmpty
     $res.function | Should Be "collectors/upgrades/collectors"
@@ -64,20 +64,20 @@ Describe "Start-UpgradeTask" {
       New-Object -TypeName psobject -Property @{
         "collector" = @{}
       }
-    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/7" }
+    } -ModuleName $ModuleName -ParameterFilter { $function -eq "collectors/7" }
     Mock invokeSumoRestMethod -Verifiable {
       New-Object -TypeName psobject -Property @{
         "id" = 3
       }
-    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/upgrades" }
+    } -ModuleName $ModuleName -ParameterFilter { $function -eq "collectors/upgrades" }
     Mock invokeSumoRestMethod -Verifiable {
       New-Object -TypeName psobject -Property @{
         "upgrade" = @{}
       }
-    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/upgrades/3" }
-    Mock getCollectorUpgradeStatus -Verifiable {} -ModuleName "SumoLogic"
+    } -ModuleName $ModuleName -ParameterFilter { $function -eq "collectors/upgrades/3" }
+    Mock getCollectorUpgradeStatus -Verifiable {} -ModuleName $ModuleName
     Start-UpgradeTask -CollectorId 7
-    Assert-MockCalled getCollectorUpgradeStatus -Exactly 1 -Scope It -ModuleName "SumoLogic"     
+    Assert-MockCalled getCollectorUpgradeStatus -Exactly 1 -Scope It -ModuleName $ModuleName
   }
 }
 
@@ -93,7 +93,7 @@ Describe "Get-UpgradeTask" {
           "status"      = 2
         }
       }
-    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/upgrades/7" }
+    } -ModuleName $ModuleName -ParameterFilter { $function -eq "collectors/upgrades/7" }
     Mock invokeSumoRestMethod -Verifiable { 
       New-Object -TypeName psobject -Property @{
         "collector" = New-Object -TypeName psobject -Property @{
@@ -105,7 +105,7 @@ Describe "Get-UpgradeTask" {
           "lastSeenAlive"    = 654321
         }
       }
-    } -ModuleName "SumoLogic" -ParameterFilter { $function -eq "collectors/3" }
+    } -ModuleName $ModuleName -ParameterFilter { $function -eq "collectors/3" }
     $res = Get-UpgradeTask -UpgradeId 7
     $res | Should Not BeNullOrEmpty
     $expected = New-Object -TypeName psobject -Property @{

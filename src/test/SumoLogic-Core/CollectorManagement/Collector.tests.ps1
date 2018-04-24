@@ -1,7 +1,7 @@
 . $PSScriptRoot/../Common/Global.ps1
 
 Describe "Get-Collector" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
@@ -40,7 +40,7 @@ Describe "Get-Collector" {
 }
 
 Describe "New-Collector" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
@@ -100,7 +100,7 @@ Describe "New-Collector" {
 }
 
 Describe "Remove-Collector" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
@@ -128,7 +128,7 @@ Describe "Remove-Collector" {
 }
 
 Describe "Set-Collector" {
-  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId -and $AccessKey) }
+  $PSDefaultParameterValues = @{ 'It:Skip' = !($AccessId) }
 
   BeforeEach {
     cleanup
