@@ -18,7 +18,10 @@ function getSession([System.Management.Automation.PSCredential]$credential) {
       $res = Invoke-RestMethod -Uri $url -Headers $defaultHeaders -Method Get `
         -Credential $credential -SessionVariable webSession -ErrorAction SilentlyContinue -ErrorVariable err
       if ($res) {
-        return [SumoAPISession]::new($apiEndpoint, $webSession)
+        return New-Object -TypeName SumoAPISession -Property @{
+          "Endpoint" = $apiEndpoint
+          "WebSession" = $webSession
+        }
       }
     }
     catch {
@@ -73,7 +76,11 @@ function invokeSumoAPI([SumoAPISession]$session,
       $qStr = getQueryString($query)
       $url += "?" + $qStr
     }
-    & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
+    if ($method -ne [Microsoft.PowerShell.Commands.WebRequestMethod]::Get) {
+      & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
+    } else {
+      & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -ErrorVariable err
+    }
     $err | ForEach-Object { Write-Error $_ }
   }
 

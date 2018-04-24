@@ -136,11 +136,11 @@ Describe "invokeSumoWebRequest" {
   $session = [SumoAPISession]::new("https://localhost/", $null)
   
   It "should call with Invoke-WebRequest" {
-    Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility) }
+    Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility) } -ModuleName $ModuleName 
     invokeSumoWebRequest -session $session -headers @{} -method Get -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It
+    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It -ModuleName $ModuleName 
     invokeSumoWebRequest -session $session -headers @{} -method Post -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It
+    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It -ModuleName $ModuleName 
   }
 }
 
@@ -149,11 +149,11 @@ Describe "invokeSumoRestMethod" {
   $session = [SumoAPISession]::new("https://localhost/", $null)
   
   It "should call with Invoke-RestMethod" {
-    Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) }
+    Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) } -ModuleName $ModuleName
     invokeSumoRestMethod -session $session -headers @{} -method Get -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It
+    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It -ModuleName $ModuleName
     invokeSumoRestMethod -session $session -headers @{} -method Post -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It
+    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It -ModuleName $ModuleName
   }
 }
 
@@ -175,9 +175,9 @@ Describe "startSearchJob" {
         $query["to"] -eq 1533686400000 -and `
         $query["timeZone"] -eq $_timeZone -and `
         $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) 
-    }
+    } -ModuleName $ModuleName
     startSearchJob $_session $_query $_from $_to $_timeZone
-    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It
+    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It -ModuleName $ModuleName
   }
 }
 
@@ -186,7 +186,7 @@ Describe "getSearchResult" {
   It "should throw exception if result is not ready" {
     Mock invokeSumoRestMethod {
       New-Object -TypeName psobject -Property @{ state = "NOT STARTED" }
-    } -ParameterFilter { $function -eq "search/jobs/0" }
+    } -ParameterFilter { $function -eq "search/jobs/0" } -ModuleName $ModuleName
     {
       getSearchResult -session $null -id 0 -limit 1 -type "Record"
     } | Should -Throw "Result is not ready"
@@ -204,7 +204,7 @@ Describe "getSearchResult" {
       "recordCount":3
     }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0" }
+    } -ParameterFilter { $function -eq "search/jobs/0" } -ModuleName $ModuleName
 
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
@@ -243,7 +243,7 @@ Describe "getSearchResult" {
       ]
     }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0/messages" }
+    } -ParameterFilter { $function -eq "search/jobs/0/messages" } -ModuleName $ModuleName
     $result = getSearchResult -session $null -id 0 -limit 3 -type "Message"
     $result | Should Not BeNullOrEmpty
     $result.Count | Should Be 3
@@ -262,7 +262,7 @@ Describe "getSearchResult" {
       "recordCount":3
     }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0" }
+    } -ParameterFilter { $function -eq "search/jobs/0" } -ModuleName $ModuleName
 
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
@@ -301,7 +301,7 @@ Describe "getSearchResult" {
       ]
     }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0/records" }
+    } -ParameterFilter { $function -eq "search/jobs/0/records" } -ModuleName $ModuleName
     $result = getSearchResult -session $null -id 0 -limit 3 -type "Record"
     $result | Should Not BeNullOrEmpty
     $result.Count | Should Be 3

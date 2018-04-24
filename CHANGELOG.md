@@ -1,9 +1,7 @@
-## 0.9.0
- - Initial public release
-
-## 1.0.0
- - Refactory for releasing on PowerShell Gallery (move all source code into `src`)
- - Add cmdlets for collector upgrade
- - Reorganization: every exported cmdlets in a file with help doc annotation
- - Add unit tests in Pester
+## 1.0.0 - 4/23/2018
+ - Refactory for releasing on PowerShell Gallery (with PowerShell Core 6.0+)
+ - Add cmdlets for collector upgrade management
+ - Reorganization - every exported cmdlets in a single file with help doc annotation
+ - Add unit tests in Pester (run with `Invoke-Pester src/test`)
  - Remove `-Deployment` parameter from `New-SumoSession` cmdlet. It will automatically redirect to correct deployment based on the access id/key
+ - Change `-AccessKey` parameter in `New-SumoSession` to `-AccessKeyAsSecureString` for passing PowerShell Gallery check
