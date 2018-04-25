@@ -15,6 +15,12 @@ The id of upgrade task in long
 Get-UpgradeTask -Id 78912
 Get upgrade status for the task 78912 (which from the result of Start-UpgradeTask cmdlet)
 
+.INPUTS
+PSObject to present upgrade task or upgrade task id in long
+
+.OUTPUTS
+PSObject to present upgrade tasks
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

@@ -23,5 +23,5 @@ This is the guide for developers who want contribute the code to this module. If
   * Generate mark-down help documents
   ```PowerShell
   PS >Import-Module ./src/main/SumoLogic-Core/SumoLogic-Core.psd1
-  PS >New-MarkdownHelp -Module SumoLogic-Core -OutputFolder docs
+  PS >New-MarkdownHelp -Module SumoLogic-Core -Force -OutputFolder docs
   ```

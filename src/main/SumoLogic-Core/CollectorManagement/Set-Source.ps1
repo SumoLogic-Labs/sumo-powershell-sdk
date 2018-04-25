@@ -19,6 +19,12 @@ Update source with the properties in $source
 Set-Source -Source $source -Passthru
 Update source with the properties in $source and return the updated result from server
 
+.INPUTS
+PSObject to present source
+
+.OUTPUTS
+PSObject to present source (if -Passthru)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 The input collector must contains a valid id field

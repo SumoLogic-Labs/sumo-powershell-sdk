@@ -1,10 +1,37 @@
 <#
 .SYNOPSIS
-    Session
+Create a session for following cmdlets
+
 .DESCRIPTION
-    Open a Sumo session.
+Create a SumoAPISession object for connecting Sumo Logic API endpoint and store it for current script
+
+.PARAMETER Credential
+A PS credential contains access id and access key information
+
+.PARAMETER AccessId
+A string contains access id from Sumo Logic
+
+.PARAMETER AccessKeyAsSecureString
+A secured string contains access key from Sumo Logic
+
 .EXAMPLE
-    New-SumoSession
+New-SumoSession -Credential $cred
+Create a session with $cred
+
+.EXAMPLE
+New-SumoSession -AccessId $AccessId -AccessKeyAsSecureString (Read-Host -AsSecureString)
+Create a session with $AccessId and $AccessKey read from console
+
+.INPUTS
+PSCredential contains access id and access key
+
+.OUTPUTS
+SumoAPISession contains endpoint and credential to access the endpoint
+
+.NOTES
+
+.LINK
+https://help.sumologic.com/APIs/General-API-Information
 #>
 
 function New-SumoSession {

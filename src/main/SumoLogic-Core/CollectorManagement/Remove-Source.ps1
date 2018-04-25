@@ -18,6 +18,12 @@ The id of source in long
 Get-Source -CollectorId 12345 -NamePattern "Web Log File" | Remove-Source
 Remove source(s) which name contains "Web Log File" and in collector with id 12345
 
+.INPUTS
+PSObject to present source(s)
+
+.OUTPUTS
+None
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

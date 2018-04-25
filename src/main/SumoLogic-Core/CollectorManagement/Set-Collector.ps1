@@ -19,6 +19,12 @@ Update collector with the properties in $collector
 Set-Collector -Collector $collector -Passthru
 Update collector with the properties in $collector and return the updated result from server
 
+.INPUTS
+PSObject to present collector
+
+.OUTPUTS
+PSObject to present collector (if -Passthru)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 The input collector must contains a valid id field

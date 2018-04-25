@@ -19,6 +19,12 @@ Get a string contains latest version of collector for upgrading
 Get-UpgradeVersion -ListAvailable
 Get all available versions for upgrading/downgrading in a string list
 
+.INPUTS
+Not accepted
+
+.OUTPUTS
+string (for latest upgrade version) all string array (for available upgrade versions)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

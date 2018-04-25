@@ -36,6 +36,12 @@ Get all collector(s) which name contains "IIS"
 Get-Collector -Offset 100 -Limit 50
 Get all collectors in current organization in page; return 50 results from begin from the 100th result
 
+.INPUTS
+Not accepted
+
+.OUTPUTS
+PSObject to present collector(s)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

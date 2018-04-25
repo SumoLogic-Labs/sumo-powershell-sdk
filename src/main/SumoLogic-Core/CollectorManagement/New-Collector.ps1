@@ -22,6 +22,12 @@ Create a collector with the definition in $collector
 Get-Content collector.json -Raw | New-Collector
 Create a collector with the definition in collector.json
 
+.INPUTS
+PSObject to present collector (for copy an existing collector) or JSON string
+
+.OUTPUTS
+PSObject to present collector(s)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 Only "Hosted" collector can be created with API
