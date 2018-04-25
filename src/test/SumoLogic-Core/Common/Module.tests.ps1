@@ -2,6 +2,7 @@
 . $ModuleRoot/Lib/Definitions.ps1
 
 $exportedCommands = (Get-Command -Module $ModuleName)
+$docRoot = Get-Item "$TestRoot\..\..\..\docs"
 
 Describe "$($ModuleName) Module" {
   It "should be loaded" {
@@ -14,11 +15,19 @@ Describe "$($ModuleName) Module" {
 
   foreach ($command in $exportedCommands) {
     Context $command {
-      It "should have proper help" {
+      It "should have proper in-module help" {
         $help = Get-Help $command.Name
         $help.description | Should Not BeNullOrEmpty
         $help.Synopsis | Should Not BeNullOrEmpty
         $help.examples | Should Not BeNullOrEmpty
+        $help.relatedLinks.navigationLink.uri[0] | Should Be "https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/$command.md"
+      }
+
+      It "should have proper online help" {
+        $helpFile = Get-Item (Join-Path $docRoot "$command.md")
+        $helpFile.Exists | Should Be $true
+        $text = Get-Content $helpFile -Raw
+        $text.Contains("{{") | Should Be $false
       }
     }
   }

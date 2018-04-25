@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://help.sumologic.com/APIs/Search-Job-API/About-the-Search-Job-API
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-SearchResult.md
 schema: 2.0.0
 ---
 
@@ -118,6 +118,8 @@ This call will wait until done gathering results or hit a failure.
 See link page for details
 
 ## RELATED LINKS
+
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-SearchResult.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-SearchResult.md)
 
 [https://help.sumologic.com/APIs/Search-Job-API/About-the-Search-Job-API](https://help.sumologic.com/APIs/Search-Job-API/About-the-Search-Job-API)
 

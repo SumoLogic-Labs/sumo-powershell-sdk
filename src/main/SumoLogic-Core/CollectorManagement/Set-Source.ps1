@@ -25,9 +25,18 @@ PSObject to present source
 .OUTPUTS
 PSObject to present source (if -Passthru)
 
+.PARAMETER Force
+Do not confirm before running
+
+.PARAMETER Passthru
+Return back the result after updating
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 The input collector must contains a valid id field
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Set-Source.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/

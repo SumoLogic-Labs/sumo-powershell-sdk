@@ -29,6 +29,9 @@ string (for latest upgrade version) all string array (for available upgrade vers
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
 .LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeVersion.md
+
+.LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/
 #>
 

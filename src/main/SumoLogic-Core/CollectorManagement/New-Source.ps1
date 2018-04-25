@@ -17,6 +17,9 @@ A PSObject contains source definition
 .PARAMETER Json
 A string contains source definition in json format
 
+.PARAMETER Force
+Do not confirm before running
+
 .EXAMPLE
 New-Source -CollectorId 12345 -Source $source
 Create a source under collector 12345 with the definition in $source
@@ -33,6 +36,9 @@ PSObject to present source
 
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-Source.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/

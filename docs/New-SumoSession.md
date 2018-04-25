@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://help.sumologic.com/APIs/General-API-Information
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-SumoSession.md
 schema: 2.0.0
 ---
 
@@ -90,7 +90,7 @@ Accept wildcard characters: False
 ```
 
 ### -ForceUpdate
-{{Fill ForceUpdate Description}}
+Do not confirm before update the default session
 
 ```yaml
 Type: SwitchParameter
@@ -150,6 +150,8 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 ## NOTES
 
 ## RELATED LINKS
+
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-SumoSession.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-SumoSession.md)
 
 [https://help.sumologic.com/APIs/General-API-Information](https://help.sumologic.com/APIs/General-API-Information)
 

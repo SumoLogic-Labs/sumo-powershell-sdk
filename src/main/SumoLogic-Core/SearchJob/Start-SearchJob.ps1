@@ -23,6 +23,9 @@ Query with a time range end to
 .PARAMETER TimeZone
 Time zone used for time range query
 
+.PARAMETER Force
+Do not confirm before running
+
 .EXAMPLE
 Start-SearchJob -Query "_sourceCategory=service ERROR" -Last "00:30:00"
 Search all results in last 30 minutes with "ERROR" in "service" category
@@ -36,6 +39,9 @@ PSObject to present search job
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 This call will wait until done gathering results or hit a failure. See link page for details
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Start-SearchJob.md
 
 .LINK
 https://help.sumologic.com/APIs/Search-Job-API/About-the-Search-Job-API

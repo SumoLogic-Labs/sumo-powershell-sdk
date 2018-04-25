@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://help.sumologic.com/APIs/01Collector-Management-API/
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Remove-Collector.md
 schema: 2.0.0
 ---
 
@@ -61,7 +61,7 @@ Accept wildcard characters: False
 ```
 
 ### -Force
-{{Fill Force Description}}
+Do not confirm before running
 
 ```yaml
 Type: SwitchParameter
@@ -122,6 +122,8 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
 ## RELATED LINKS
+
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Remove-Collector.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Remove-Collector.md)
 
 [https://help.sumologic.com/APIs/01Collector-Management-API/](https://help.sumologic.com/APIs/01Collector-Management-API/)
 

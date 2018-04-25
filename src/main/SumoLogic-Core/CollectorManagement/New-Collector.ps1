@@ -14,6 +14,9 @@ A PSObject contains collector definition
 .PARAMETER Json
 A string contains collector definition in json format
 
+.PARAMETER Force
+Do not confirm before running
+
 .EXAMPLE
 New-Collector -Collector $collector
 Create a collector with the definition in $collector
@@ -31,6 +34,9 @@ PSObject to present collector(s)
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 Only "Hosted" collector can be created with API
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-Collector.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/
