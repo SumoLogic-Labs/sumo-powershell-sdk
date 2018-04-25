@@ -12,7 +12,7 @@
   RootModule        = 'SumoLogic-Core.psm1'
 
   # Version number of this module.
-  ModuleVersion     = '1.0.1'
+  ModuleVersion     = '1.0.2'
 
   # Supported PSEditions
   # CompatiblePSEditions = @()
@@ -138,10 +138,10 @@
       LicenseUri   = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/LICENSE'
 
       # A URL to the main website for this project.
-      ProjectUri   = 'https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallary'
+      ProjectUri   = 'https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallery'
 
       # A URL to an icon representing this module.
-      IconUri      = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/icon.png'
+      IconUri      = 'https://raw.githubusercontent.com/SumoLogic/sumo-powershell-sdk/ps_gallery/icon.png'
 
       # ReleaseNotes of this module
       ReleaseNotes = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/CHANGELOG.md'

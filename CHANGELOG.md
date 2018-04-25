@@ -1,5 +1,7 @@
+## 1.0.2 - 4/25/2018
+ - Generate online help documents
 ## 1.0.1 - 4/25/2018
- - Document update for Input/Output notation
+ - Documents update for Inputs/Outputs annotation
 ## 1.0.0 - 4/23/2018
  - Refactory for releasing on PowerShell Gallery (with PowerShell Core 6.0+)
  - Add cmdlets for collector upgrade management
