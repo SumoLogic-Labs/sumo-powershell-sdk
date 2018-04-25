@@ -66,7 +66,11 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### PSObject to present upgrade task or upgrade task id in long
+
 ## OUTPUTS
+
+### PSObject to present upgrade tasks
 
 ## NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter

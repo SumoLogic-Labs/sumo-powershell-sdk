@@ -1,14 +1,14 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://help.sumologic.com/APIs/01Collector-Management-API/
+online version: https://help.sumologic.com/APIs/General-API-Information
 schema: 2.0.0
 ---
 
 # New-SumoSession
 
 ## SYNOPSIS
-Session
+Create a session for following cmdlets
 
 ## SYNTAX
 
@@ -24,19 +24,28 @@ New-SumoSession -AccessId <String> -AccessKeyAsSecureString <SecureString> [-For
 ```
 
 ## DESCRIPTION
-Open a Sumo session.
+Create a SumoAPISession object for connecting Sumo Logic API endpoint and store it for current script
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-New-SumoSession
+New-SumoSession -Credential $cred
 ```
+
+Create a session with $cred
+
+### EXAMPLE 2
+```
+New-SumoSession -AccessId $AccessId -AccessKeyAsSecureString (Read-Host -AsSecureString)
+```
+
+Create a session with $AccessId and $AccessKey read from console
 
 ## PARAMETERS
 
 ### -Credential
-{{Fill Credential Description}}
+A PS credential contains access id and access key information
 
 ```yaml
 Type: PSCredential
@@ -51,7 +60,7 @@ Accept wildcard characters: False
 ```
 
 ### -AccessId
-{{Fill AccessId Description}}
+A string contains access id from Sumo Logic
 
 ```yaml
 Type: String
@@ -66,7 +75,7 @@ Accept wildcard characters: False
 ```
 
 ### -AccessKeyAsSecureString
-{{Fill AccessKeyAsSecureString Description}}
+A secured string contains access key from Sumo Logic
 
 ```yaml
 Type: SecureString
@@ -132,8 +141,15 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### PSCredential contains access id and access key
+
 ## OUTPUTS
+
+### SumoAPISession contains endpoint and credential to access the endpoint
 
 ## NOTES
 
 ## RELATED LINKS
+
+[https://help.sumologic.com/APIs/General-API-Information](https://help.sumologic.com/APIs/General-API-Information)
+

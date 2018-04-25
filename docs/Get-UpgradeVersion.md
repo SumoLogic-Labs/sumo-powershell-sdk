@@ -69,7 +69,11 @@ Accept wildcard characters: False
 
 ## INPUTS
 
+### Not accepted
+
 ## OUTPUTS
+
+### string (for latest upgrade version) all string array (for available upgrade versions)
 
 ## NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter

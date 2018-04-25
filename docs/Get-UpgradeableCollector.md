@@ -110,7 +110,11 @@ Accept wildcard characters: False
 
 ## INPUTS
 
+### Not accepted
+
 ## OUTPUTS
+
+### PSObject to present collector(s) (elegible for upgrading)
 
 ## NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
