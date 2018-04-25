@@ -14,13 +14,17 @@ It is free and open sourced, subject to the terms of the Apache 2.0 license.
 * Install [PowerShell Core](https://github.com/PowerShell/PowerShell) 6.0 or higher. 
 * Install module:
 ```PowerShell
-# From local github clone
-PS> Import-Module $repo/src/main/SumoLogic-Core
 # Download and install remotely from PowerShell Gallery
 PS> Save-Module -Name SumoLogic-Core -Path <path> # Save locally
 PS> Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator priveldge
+# Alternatively, from local github clone
+PS> Import-Module $repo/src/main/SumoLogic-Core
 ```
-### 3. Start to use cmdlets
+
+### 3. Read help document of cmdlets
+https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallary/doc
+
+### 4. Start to use cmdlets
 ```PowerShell
 PS> Get-Command -Module SumoLogic-Core # Navigate all commands in the module
 PS> Get-Help Get-Collector -Full # Get help and samples for cmdlets
