@@ -32,8 +32,6 @@ https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallery/docs
 ```PowerShell
 PS> Get-Command -Module SumoLogic-Core # Navigate all commands in the module
 PS> Get-Help Get-Collector -Full # Get help and samples for cmdlets
-PS> New-SumoSession -AccessId xxx -AccessKey xxxxxxxx # Creating session
-PS> Get-Collector # List all collectors
 ...
 ```
 
