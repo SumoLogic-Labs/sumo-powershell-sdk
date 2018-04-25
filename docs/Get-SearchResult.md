@@ -106,7 +106,11 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### PSObject to present search job
+
 ## OUTPUTS
+
+### PSObject to present records or messages
 
 ## NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter

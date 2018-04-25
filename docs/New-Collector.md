@@ -141,7 +141,11 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### PSObject to present collector (for copy an existing collector) or JSON string
+
 ## OUTPUTS
+
+### PSObject to present collector(s)
 
 ## NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter

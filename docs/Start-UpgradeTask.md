@@ -135,7 +135,11 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### PSObject to present collector
+
 ## OUTPUTS
+
+### PSObject to present collector upgrade task
 
 ## NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
