@@ -22,7 +22,7 @@ PS> Import-Module $repo/src/main/SumoLogic-Core
 ```
 
 ### 3. Read help document of cmdlets
-https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallary/doc
+https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallery/docs
 
 ### 4. Start to use cmdlets
 ```PowerShell
