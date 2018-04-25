@@ -1,3 +1,5 @@
+## 1.0.1 - 4/25/2018
+ - Document update for Input/Output notation
 ## 1.0.0 - 4/23/2018
  - Refactory for releasing on PowerShell Gallery (with PowerShell Core 6.0+)
  - Add cmdlets for collector upgrade management
