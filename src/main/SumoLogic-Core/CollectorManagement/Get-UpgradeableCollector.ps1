@@ -29,6 +29,12 @@ Get all collectors in current organization can be upgraded/downgraded to version
 Get-UpgradeableCollector -Offset 100 -Limit 50
 Get all collectors in current organization can be upgraded to latest version in page; return 50 results from begin from the 100th result
 
+.INPUTS
+Not accepted
+
+.OUTPUTS
+PSObject to present collector(s) (elegible for upgrading)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

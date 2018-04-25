@@ -15,6 +15,12 @@ The id of collector in long
 Get-Collector 12345 | Remove-Collector
 Remove collector with id 12345
 
+.INPUTS
+PSObject to present collector(s)
+
+.OUTPUTS
+None
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

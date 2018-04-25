@@ -27,6 +27,12 @@ Time zone used for time range query
 Start-SearchJob -Query "_sourceCategory=service ERROR" -Last "00:30:00"
 Search all results in last 30 minutes with "ERROR" in "service" category
 
+.INPUTS
+Not accepted
+
+.OUTPUTS
+PSObject to present search job
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 This call will wait until done gathering results or hit a failure. See link page for details

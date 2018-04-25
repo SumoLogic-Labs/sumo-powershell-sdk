@@ -25,6 +25,12 @@ Search all results in last 30 minutes with "ERROR" in "service" category and ret
 Start-SearchJob -Query "| count _sourceCategory" -Last "00:30:00" | Get-SearchResult -Type Record
 Return the number of messages for each source category in last 30 minutes
 
+.INPUTS
+PSObject to present search job
+
+.OUTPUTS
+PSObject to present records or messages
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 This call will wait until done gathering results or hit a failure. See link page for details

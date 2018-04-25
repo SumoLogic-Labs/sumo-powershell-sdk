@@ -25,6 +25,12 @@ Create a source under collector 12345 with the definition in $source
 Get-Content source.json -Raw | New-Source -CollectorId 12345 
 Create a source under collector 12345 with the definition in source.json
 
+.INPUTS
+PSObject to present collector (for the new source created on)
+
+.OUTPUTS
+PSObject to present source
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

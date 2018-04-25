@@ -29,6 +29,12 @@ Submit upgrade request on collector 12345 to version 19.216-22 and wait it compl
 Get-UpgradeableCollector | Start-UpgradeTask | Wait-UpgradeTask
 Submit upgrade requests on all available collectors to latest version and wait them complete
 
+.INPUTS
+PSObject to present collector upgrade task(s)
+
+.OUTPUTS
+PSObject to present collector upgrade task(s)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

@@ -29,6 +29,12 @@ Get source(s) which name contains "Web Log File" and in collector with id 12345
 Get-Collector -NamePattern "IIS" | Get-Source -NamePattern "Web Log File"
 Get all sources which name contains "Web Log File" in all collector(s) wich name contains "IIS"
 
+.INPUTS
+PSObject to present collector (for get all sources in collector)
+
+.OUTPUTS
+PSObject to present source(s)
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 

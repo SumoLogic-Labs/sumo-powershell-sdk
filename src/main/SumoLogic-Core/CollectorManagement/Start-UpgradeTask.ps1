@@ -22,6 +22,12 @@ Submit a collector upgrade task request for upgrading collector with id 12345 to
 Get-UpgradeableCollector | Start-UpgradeTask
 Submit upgrade tasks for upgrading all collectors in current orgnization to latest version
 
+.INPUTS
+PSObject to present collector
+
+.OUTPUTS
+PSObject to present collector upgrade task
+
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
