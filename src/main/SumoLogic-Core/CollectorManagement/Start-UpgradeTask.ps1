@@ -14,6 +14,9 @@ The id of collector in long
 .PARAMETER Version
 A string contains collector version want upgrade/downgrade to
 
+.PARAMETER Force
+Do not confirm before running
+
 .EXAMPLE
 Start-UpgradeTask -CollectorId 12345 -ToVersion 19.208-19
 Submit a collector upgrade task request for upgrading collector with id 12345 to version 19.209-19
@@ -30,6 +33,9 @@ PSObject to present collector upgrade task
 
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Start-UpgradeTask.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/

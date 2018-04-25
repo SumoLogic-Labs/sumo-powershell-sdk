@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://help.sumologic.com/APIs/01Collector-Management-API/
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeTask.md
 schema: 2.0.0
 ---
 
@@ -76,6 +76,8 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
 ## RELATED LINKS
+
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeTask.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeTask.md)
 
 [https://help.sumologic.com/APIs/01Collector-Management-API/](https://help.sumologic.com/APIs/01Collector-Management-API/)
 

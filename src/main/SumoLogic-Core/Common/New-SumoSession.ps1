@@ -14,6 +14,9 @@ A string contains access id from Sumo Logic
 .PARAMETER AccessKeyAsSecureString
 A secured string contains access key from Sumo Logic
 
+.PARAMETER ForceUpdate
+Do not confirm before update the default session
+
 .EXAMPLE
 New-SumoSession -Credential $cred
 Create a session with $cred
@@ -29,6 +32,9 @@ PSCredential contains access id and access key
 SumoAPISession contains endpoint and credential to access the endpoint
 
 .NOTES
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-SumoSession.md
 
 .LINK
 https://help.sumologic.com/APIs/General-API-Information

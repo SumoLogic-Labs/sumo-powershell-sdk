@@ -11,6 +11,9 @@ An instance of SumoAPISession which contains API endpoint and credential
 .PARAMETER Id
 The id of collector in long
 
+.PARAMETER Force
+Do not confirm before running
+
 .EXAMPLE
 Get-Collector 12345 | Remove-Collector
 Remove collector with id 12345
@@ -23,6 +26,9 @@ None
 
 .NOTES
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
+
+.LINK
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Remove-Collector.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/
