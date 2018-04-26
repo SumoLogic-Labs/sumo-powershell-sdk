@@ -3,6 +3,10 @@
 This is a community-supported Windows PowerShell Module to work with the Sumo Logic [REST API](https://help.sumologic.com/APIs).
 It is free and open source, subject to the terms of the Apache 2.0 license.
 
+| TLS Deprecation Notice |
+| --- |
+| In keeping with industry standard security best practices, as of May 31, 2018, the Sumo Logic service will only support TLS version 1.2 going forward. Verify that all connections to Sumo Logic endpoints are made from software that supports TLS 1.2. |
+
 ## Getting Started
 
 ### 1. Create a Sumo Logic account and get API access Id/Key
