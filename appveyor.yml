@@ -1,14 +1,34 @@
 version: 1.0.{build}
+
+pull_requests:
+  do_not_increment_build_number: true
+
 branches:
   only:
   - byi-ps_gallery_103
+
 skip_non_tags: true
+
 environment:
   appveyor_test_acc_id:
     secure: QI49XVfnQ5PE8CmerKIE1g==
   appveyor_test_acc_key:
     secure: 88bcAC0CMrhBzXkNA7FYaHHp7h8yfz5LCU3NQXvYL7hacqYkk8VmYeR02EMOZDL1SThyaIjikPN40r+bPQnE2wy7QKI1qiqKH/OqAdV++cY=
+
+install:
+  - ps: Install-Module -Name PSScriptAnalyzer
+  - ps: Install-Module -Name Pester
+  - ps: Install-Module -Name platyPS
+  - pwsh: Install-Module -Name PSScriptAnalyzer
+  - pwsh: Install-Module -Name Pester
+  - pwsh: Install-Module -Name platyPS
+
 build: off
+
 test_script:
-- pwsh: "Install-Module -Name PSScriptAnalyzer\nInstall-Module -Name Pester\nInstall-Module -Name platyPS\n$testResultsFile = \".\\TestsResults.xml\"\n$res = Invoke-Pester -OutputFormat NUnitXml -OutputFile $testResultsFile -PassThru -PesterOption (New-PesterOption -TestSuiteName \"PowerShell Core\")\n(New-Object 'System.Net.WebClient').UploadFile(\"https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)\", (Resolve-Path $testResultsFile))\nif ($res.FailedCount -gt 0) { \n  throw \"$($res.FailedCount) tests failed.\"\n}"
-- ps: "Install-Module -Name PSScriptAnalyzer\nInstall-Module -Name Pester\nInstall-Module -Name platyPS\n$testResultsFile = \".\\TestsResults.xml\"\n$res = Invoke-Pester -OutputFormat NUnitXml -OutputFile $testResultsFile -PassThru -PesterOption (New-PesterOption -TestSuiteName \"Windows PowerShell\")\n(New-Object 'System.Net.WebClient').UploadFile(\"https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)\", (Resolve-Path $testResultsFile))\nif ($res.FailedCount -gt 0) { \n  throw \"$($res.FailedCount) tests failed.\"\n}"
+  - ps: $res = Invoke-Pester -Path ".\src\test" -OutputFormat NUnitXml -OutputFile TestsResults-Win.xml -PassThru
+  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults-Win.xml))
+  - ps: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) Windows PowerShell tests failed."}
+  - pwsh: $res = Invoke-Pester -Path ".\src\test" -OutputFormat NUnitXml -OutputFile TestsResults-Win.xml -PassThru
+  - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults-Win.xml))
+  - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) PowerShell Core tests failed."}
