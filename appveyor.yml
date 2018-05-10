@@ -13,8 +13,6 @@ skip_commits:
     - appveyor.yml
   message: /update readme.*|update docs.*|update version.*|update appveyor.*/
 
-image: Visual Studio 2017
-
 environment:
   appveyor_test_acc_id:
     secure: QI49XVfnQ5PE8CmerKIE1g==
