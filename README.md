@@ -1,4 +1,6 @@
 # SumoLogic PowerShell Core Module
+[![Build status](https://ci.appveyor.com/api/projects/status/t22p5jaq164ixqq1?svg=true)](https://ci.appveyor.com/project/bin3377/sumo-powershell-sdk)
+
 The PowerShell Core module for managing collectors/sources, upgrading collectors, searching logs, etc.
 This is a community-supported PowerShell Core module forked from https://github.com/SumoLogic/sumo-powershell-sdk and working with SumoLogic [REST API](https://help.sumologic.com/APIs).
 It is free and open sourced, subject to the terms of the Apache 2.0 license.
