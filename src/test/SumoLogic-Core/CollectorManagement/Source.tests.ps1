@@ -124,6 +124,7 @@ Describe "New-Source" {
     $res -isnot [array] | Should Be $true
     $res.id | Should Not BeNullOrEmpty
     $res.collectorId | Should Not BeNullOrEmpty
+    Remove-Collector -Id $res.collectorId -Force
   }
 
   It "should create source from a copy from another collector" {

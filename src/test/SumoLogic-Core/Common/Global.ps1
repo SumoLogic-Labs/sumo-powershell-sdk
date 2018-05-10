@@ -10,10 +10,9 @@ Write-Verbose "Test Root - $TestRoot"
 Import-Module $ModuleRoot -Force
 . "$TestRoot/Common/TestHelpers.ps1"
 
-if (!$AccessId) {
-  $Global:AccessId = Read-Host "Please enter your SumoLogic Access ID"
+if ($env:appveyor_test_acc_id) {
+  $Global:AccessId = $env:appveyor_test_acc_id
+  $Global:AccessKeyAsSecureString = ConvertTo-SecureString $env:appveyor_test_acc_key -AsPlainText -Force
+  New-SumoSession -AccessId $AccessId -AccessKeyAsSecureString $AccessKeyAsSecureString | Out-Null
+  Get-Collector -NamePattern "PowerShell_Test" | Remove-Collector -Force
 }
-if (!$AccessKeyAsSecureString) {
-  $Global:AccessKeyAsSecureString = Read-Host "Please enter your SumoLogic Access Key" -AsSecureString
-}
-New-SumoSession -AccessId $AccessId -AccessKeyAsSecureString $AccessKeyAsSecureString | Out-Null
