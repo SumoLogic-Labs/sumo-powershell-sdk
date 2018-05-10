@@ -102,6 +102,32 @@ function invokeSumoRestMethod([SumoAPISession]$session,
     invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility)
 }
 
+function getCollectorsByPage([SumoAPISession]$session, [int]$offset, [int]$limit) {
+  $query = @{
+    'offset' = $offset
+    'limit'  = $limit
+  }
+  try {
+    (invokeSumoRestMethod -session $Session -method Get -function "collectors" -query $query).collectors
+  } catch {
+    @()
+  }
+}
+
+function getAllCollectors([SumoAPISession]$session) {
+  $res = @()
+  $limit = 1000
+  $offset = 0
+  do {
+    $text = "Processing {0} to {1} collectors" -f $offset, ($offset + $limit)
+    Write-Progress -Activity "Query collectors" -Status $text -PercentComplete -1
+    $set = getCollectorsByPage -session $session -offset $offset -limit $limit
+    $res += $set
+    $offset += $limit
+  } while ($set.count -gt 0)
+  $res
+}
+
 function startSearchJob ([SumoAPISession]$session, [string]$query, [datetime]$from, [datetime]$to, [string]$timeZone) {
   $fromT = getUnixTimeStamp ($from)
   $toT = getUnixTimeStamp ($to)
