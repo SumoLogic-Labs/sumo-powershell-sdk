@@ -22,6 +22,8 @@ environment:
     secure: 88bcAC0CMrhBzXkNA7FYaHHp7h8yfz5LCU3NQXvYL7hacqYkk8VmYeR02EMOZDL1SThyaIjikPN40r+bPQnE2wy7QKI1qiqKH/OqAdV++cY=
   GitHubKey:
     secure: 3Oo9VMKhiZq3rq911PXu7AAxfHAuQ+k2JTmqKESbcb3jpqLV58fkGqUKDp5VO8n8
+  NuGetApiKey:
+    secure: KssdeN7O5SeV453hRse+HcUimuVEd2BniqSnTKOns2VS8QSXD2vaWO/nKFzWR4DY
 
 install:
   - ps: Install-Module -Name PSScriptAnalyzer
