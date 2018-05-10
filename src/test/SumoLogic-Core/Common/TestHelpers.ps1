@@ -61,8 +61,15 @@ function mockHttpCmdlet {
 }
 
 function cleanup {
-  Get-Collector -NamePattern "PowerShell_Test.*"| Remove-Collector -Force
+  $Script:testCollectorIds | ForEach-Object {
+    try {
+      Remove-Collector -Id $_ -Force
+    } catch { }
+  }
+  $Script:testCollectorIds = @()
 }
+
+$Script:testCollectorIds = @()
 
 function testCollector($suffix = "") {
   $obj = New-Object -TypeName psobject -Property @{
@@ -74,6 +81,7 @@ function testCollector($suffix = "") {
   }
   $res = New-Collector -Collector $obj
   $res | Should Not BeNullOrEmpty
+  $Script:testCollectorIds += $res.id
   $res
 }
 
