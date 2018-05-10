@@ -1,3 +1,6 @@
+## 1.0.3 - 5/10/2018
+ - Support over 1000 collectors in Get-Collector
+ - Integrate to App Veyor
 ## 1.0.2 - 4/25/2018
  - Generate online help documents
 ## 1.0.1 - 4/25/2018

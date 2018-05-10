@@ -124,6 +124,7 @@ Describe "New-Source" {
     $res -isnot [array] | Should Be $true
     $res.id | Should Not BeNullOrEmpty
     $res.collectorId | Should Not BeNullOrEmpty
+    Remove-Collector -Id $res.collectorId -Force
   }
 
   It "should create source from a copy from another collector" {
@@ -157,7 +158,7 @@ Describe "Remove-Source" {
     Remove-Source $cid $sid -Force
     {
       Get-Source $cid $sid
-    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+    } | Should -Throw
   }
 
   It "should remove source from pipeline" {
@@ -167,7 +168,7 @@ Describe "Remove-Source" {
     Get-Source $cid $sid | Remove-Source -Force
     {
       Get-Source $cid $sid
-    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+    } | Should -Throw
   }
 }
 

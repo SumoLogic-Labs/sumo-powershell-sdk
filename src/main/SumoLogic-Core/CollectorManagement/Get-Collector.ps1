@@ -68,21 +68,17 @@ function Get-Collector {
   switch ($PSCmdlet.ParameterSetName) {
     "ById" {
       if (-not ($Id)) {
-        (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors
+        getAllCollectors -session $Session
       }
       else {
         (invokeSumoRestMethod -session $Session -method Get -function "collectors/$Id").collector
       }
     }
     "ByName" {
-      (invokeSumoRestMethod -session $Session -method Get -function "collectors").collectors | Where-Object { $_.name -match [regex]$NamePattern }
+      getAllCollectors -session $Session | Where-Object { $_.name -match [regex]$NamePattern }
     }
     "ByPage" {
-      $query = @{
-        'offset' = $Offset
-        'limit'  = $Limit
-      }
-      (invokeSumoRestMethod -session $Session -method Get -function "collectors" -query $query).collectors
+      getCollectorsByPage -session $Session -offset $Offset -limit $Limit
     }
   }
 }

@@ -65,6 +65,7 @@ Describe "New-Collector" {
     $res = New-Collector $json
     $res | Should Not BeNullOrEmpty
     $res.name | Should Be "PowerShell_Test"
+    $res | Remove-Collector -Force
   }
 
   It "should create collector with valid collector object" {
@@ -77,6 +78,7 @@ Describe "New-Collector" {
     $res = New-Collector $obj
     $res | Should Not BeNullOrEmpty
     $res.name | Should Be "PowerShell_Test"
+    $res | Remove-Collector -Force
   }
 
   It "should create collector with pipeline input" {
@@ -88,6 +90,7 @@ Describe "New-Collector" {
     } | New-Collector
     $res | Should Not BeNullOrEmpty
     $res.name | Should Be "PowerShell_Test"
+    $res | Remove-Collector -Force
   }
 
   It "should create collector with only name changed" {
@@ -96,6 +99,7 @@ Describe "New-Collector" {
     $res1 = New-Collector -Collector $res
     $res1 | Should Not BeNullOrEmpty
     $res1.name | Should Be "PowerShell_Test_1"
+    $res1 | Remove-Collector -Force
   }
 }
 
@@ -115,7 +119,7 @@ Describe "Remove-Collector" {
     Remove-Collector $res.id -Force
     {
       Get-Collector -Id $res.id
-    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+    } | Should -Throw
   }
 
   It "should remove collector from pipeline" {
@@ -123,7 +127,7 @@ Describe "Remove-Collector" {
     Get-Collector -Id $res.id | Remove-Collector -Force
     {
       Get-Collector -Id $res.id
-    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+    } | Should -Throw
   }
 }
 
