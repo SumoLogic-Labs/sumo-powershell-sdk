@@ -26,14 +26,14 @@ environment:
     secure: KssdeN7O5SeV453hRse+HcUimuVEd2BniqSnTKOns2VS8QSXD2vaWO/nKFzWR4DY
 
 install:
-  - ps: Install-Module -Name PSScriptAnalyzer
-  - ps: Install-Module -Name Pester
-  - ps: Install-Module -Name platyPS
-  - ps: Install-Module -Name posh-git
-  - pwsh: Install-Module -Name PSScriptAnalyzer
-  - pwsh: Install-Module -Name Pester
-  - pwsh: Install-Module -Name platyPS
-  - pwsh: Install-Module -Name posh-git
+  - ps: Install-Module -Name PSScriptAnalyzer -Force
+  - ps: Install-Module -Name Pester -Force
+  - ps: Install-Module -Name platyPS -Force
+  - ps: Install-Module -Name posh-git -Force
+  - pwsh: Install-Module -Name PSScriptAnalyzer -Force
+  - pwsh: Install-Module -Name Pester -Force
+  - pwsh: Install-Module -Name platyPS -Force
+  - pwsh: Install-Module -Name posh-git -Force
 
 build: off
 
