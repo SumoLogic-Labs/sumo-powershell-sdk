@@ -49,6 +49,7 @@ deploy:
     tag: v$(appveyor_build_version)
     auth_token:
       secure: 3Oo9VMKhiZq3rq911PXu7AAxfHAuQ+k2JTmqKESbcb3jpqLV58fkGqUKDp5VO8n8
+    draft: true
     force_update: true
     on:
       branch: ps_gallery
