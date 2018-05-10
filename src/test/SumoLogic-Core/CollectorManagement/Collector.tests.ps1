@@ -119,7 +119,7 @@ Describe "Remove-Collector" {
     Remove-Collector $res.id -Force
     {
       Get-Collector -Id $res.id
-    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+    } | Should -Throw
   }
 
   It "should remove collector from pipeline" {
@@ -127,7 +127,7 @@ Describe "Remove-Collector" {
     Get-Collector -Id $res.id | Remove-Collector -Force
     {
       Get-Collector -Id $res.id
-    } | Should -Throw "Response status code does not indicate success: 404 (Not Found)."
+    } | Should -Throw
   }
 }
 
