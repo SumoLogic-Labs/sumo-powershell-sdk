@@ -61,7 +61,9 @@ function mockHttpCmdlet {
 }
 
 function cleanup {
-  Get-Collector -NamePattern "PowerShell_Test" | Remove-Collector -Force
+  try {
+    Get-Collector -NamePattern "PowerShell_Test" | Remove-Collector -Force
+  } catch { }
 }
 
 function testCollector($suffix = [guid]::NewGuid()) {
