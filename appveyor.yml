@@ -1,25 +1,10 @@
 version: 1.0.{build}
 
-branches:
-  only:
-  - ps_gallery
-
-skip_tags: true
-
-skip_commits:
-  files:
-    - README.md
-    - CHANGELOG.md
-    - appveyor.yml
-  message: /update readme.*|update docs.*|update version.*|update appveyor.*/
-
 environment:
   appveyor_test_acc_id:
     secure: QI49XVfnQ5PE8CmerKIE1g==
   appveyor_test_acc_key:
     secure: 88bcAC0CMrhBzXkNA7FYaHHp7h8yfz5LCU3NQXvYL7hacqYkk8VmYeR02EMOZDL1SThyaIjikPN40r+bPQnE2wy7QKI1qiqKH/OqAdV++cY=
-  GitHubKey:
-    secure: 3Oo9VMKhiZq3rq911PXu7AAxfHAuQ+k2JTmqKESbcb3jpqLV58fkGqUKDp5VO8n8
   NuGetApiKey:
     secure: KssdeN7O5SeV453hRse+HcUimuVEd2BniqSnTKOns2VS8QSXD2vaWO/nKFzWR4DY
 
@@ -42,14 +27,8 @@ test_script:
   - pwsh: $res = Invoke-Pester -Path ".\src\test" -OutputFormat NUnitXml -OutputFile TestsResults-Core.xml -PassThru
   - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults-Core.xml))
   - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) PowerShell Core tests failed."}
-  - ps: . ./publish-module.ps1
 
-deploy:
-  - provider: GitHub
-    tag: v$(appveyor_build_version)
-    auth_token:
-      secure: 3Oo9VMKhiZq3rq911PXu7AAxfHAuQ+k2JTmqKESbcb3jpqLV58fkGqUKDp5VO8n8
-    draft: true
-    force_update: true
+deploy_script:
+  - pwsh: ci/publish-module.ps1
     on:
-      branch: ps_gallery
+      appveyor_repo_tag: true
