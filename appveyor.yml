@@ -1,0 +1,32 @@
+version: 1.1.0-{build}
+
+environment:
+  appveyor_test_acc_id:
+    secure: QI49XVfnQ5PE8CmerKIE1g==
+  appveyor_test_acc_key:
+    secure: 88bcAC0CMrhBzXkNA7FYaHHp7h8yfz5LCU3NQXvYL7hacqYkk8VmYeR02EMOZDL1SThyaIjikPN40r+bPQnE2wy7QKI1qiqKH/OqAdV++cY=
+  NuGetApiKey:
+    secure: KssdeN7O5SeV453hRse+HcUimuVEd2BniqSnTKOns2VS8QSXD2vaWO/nKFzWR4DY
+
+install:
+  - ps: Install-Module -Name PSScriptAnalyzer -Force
+  - ps: Install-Module -Name Pester -Force
+  - ps: Install-Module -Name platyPS -Force
+  - ps: Install-Module -Name posh-git -Force
+  - pwsh: Install-Module -Name PSScriptAnalyzer -Force
+  - pwsh: Install-Module -Name Pester -Force
+  - pwsh: Install-Module -Name platyPS -Force
+  - pwsh: Install-Module -Name posh-git -Force
+
+build: off
+
+test_script:
+  - ps: $res = Invoke-Pester -Path ".\src\test" -OutputFormat NUnitXml -OutputFile TestsResults-Win.xml -PassThru
+  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults-Win.xml))
+  - ps: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) Windows PowerShell tests failed."}
+  - pwsh: $res = Invoke-Pester -Path ".\src\test" -OutputFormat NUnitXml -OutputFile TestsResults-Core.xml -PassThru
+  - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults-Core.xml))
+  - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) PowerShell Core tests failed."}
+
+deploy_script:
+  - pwsh: ci/publish-module.ps1
