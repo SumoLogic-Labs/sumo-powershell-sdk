@@ -60,7 +60,7 @@ Describe "New-Source" {
       "source":{
          "sourceType":"HTTP",
          "name":"Example1",
-         "messagePerRequest": true
+         "messagePerRequest": false
       }
    }
 '@
@@ -116,7 +116,7 @@ Describe "New-Source" {
   "source":{
      "sourceType":"HTTP",
      "name":"Example1",
-     "messagePerRequest": true
+     "messagePerRequest": false
   }
 }
 '@
