@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-Collector.md
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/New-Collector.md
 schema: 2.0.0
 ---
 
@@ -153,7 +153,7 @@ Only "Hosted" collector can be created with API
 
 ## RELATED LINKS
 
-[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-Collector.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-Collector.md)
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/New-Collector.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/New-Collector.md)
 
 [https://help.sumologic.com/APIs/01Collector-Management-API/](https://help.sumologic.com/APIs/01Collector-Management-API/)
 

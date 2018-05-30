@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Set-Collector.md
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Set-Collector.md
 schema: 2.0.0
 ---
 
@@ -147,7 +147,7 @@ The input collector must contains a valid id field
 
 ## RELATED LINKS
 
-[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Set-Collector.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Set-Collector.md)
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Set-Collector.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Set-Collector.md)
 
 [https://help.sumologic.com/APIs/01Collector-Management-API/](https://help.sumologic.com/APIs/01Collector-Management-API/)
 

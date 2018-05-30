@@ -1,7 +1,7 @@
 ---
 external help file: SumoLogic-Core-help.xml
 Module Name: SumoLogic-Core
-online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeVersion.md
+online version: https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Get-UpgradeVersion.md
 schema: 2.0.0
 ---
 
@@ -80,7 +80,7 @@ You can pre-load the API credential with New-SumoSession cmdlet in script or pas
 
 ## RELATED LINKS
 
-[https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeVersion.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-UpgradeVersion.md)
+[https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Get-UpgradeVersion.md](https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Get-UpgradeVersion.md)
 
 [https://help.sumologic.com/APIs/01Collector-Management-API/](https://help.sumologic.com/APIs/01Collector-Management-API/)
 
