@@ -135,16 +135,16 @@
       Tags         = @('Log', 'SumoLogic', 'SDK', 'Collector', 'Management', 'API')
 
       # A URL to the license for this module.
-      LicenseUri   = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/LICENSE'
+      LicenseUri   = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/LICENSE'
 
       # A URL to the main website for this project.
       ProjectUri   = 'https://github.com/SumoLogic/sumo-powershell-sdk/tree/ps_gallery'
 
       # A URL to an icon representing this module.
-      IconUri      = 'https://raw.githubusercontent.com/SumoLogic/sumo-powershell-sdk/ps_gallery/icon.png'
+      IconUri      = 'https://raw.githubusercontent.com/SumoLogic/sumo-powershell-sdk/master/icon.png'
 
       # ReleaseNotes of this module
-      ReleaseNotes = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/CHANGELOG.md'
+      ReleaseNotes = 'https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/CHANGELOG.md'
 
     } # End of PSData hashtable
 

@@ -20,7 +20,7 @@ Describe "$($ModuleName) Module" {
         $help.description | Should Not BeNullOrEmpty
         $help.Synopsis | Should Not BeNullOrEmpty
         $help.examples | Should Not BeNullOrEmpty
-        $help.relatedLinks.navigationLink.uri[0] | Should Be "https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/$command.md"
+        $help.relatedLinks.navigationLink.uri[0] | Should Be "https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/$command.md"
       }
 
       It "should have proper online help" {

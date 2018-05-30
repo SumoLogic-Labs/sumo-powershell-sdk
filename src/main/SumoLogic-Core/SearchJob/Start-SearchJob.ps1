@@ -41,7 +41,7 @@ You can pre-load the API credential with New-SumoSession cmdlet in script or pas
 This call will wait until done gathering results or hit a failure. See link page for details
 
 .LINK
-https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Start-SearchJob.md
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Start-SearchJob.md
 
 .LINK
 https://help.sumologic.com/APIs/Search-Job-API/About-the-Search-Job-API

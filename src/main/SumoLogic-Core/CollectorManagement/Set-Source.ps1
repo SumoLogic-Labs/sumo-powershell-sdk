@@ -36,7 +36,7 @@ You can pre-load the API credential with New-SumoSession cmdlet in script or pas
 The input collector must contains a valid id field
 
 .LINK
-https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Set-Source.md
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Set-Source.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/

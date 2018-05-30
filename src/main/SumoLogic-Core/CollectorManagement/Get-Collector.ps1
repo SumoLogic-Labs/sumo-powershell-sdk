@@ -46,7 +46,7 @@ PSObject to present collector(s)
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
 .LINK
-https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/Get-Collector.md
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/Get-Collector.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/

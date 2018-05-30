@@ -34,7 +34,7 @@ SumoAPISession contains endpoint and credential to access the endpoint
 .NOTES
 
 .LINK
-https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-SumoSession.md
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/New-SumoSession.md
 
 .LINK
 https://help.sumologic.com/APIs/General-API-Information

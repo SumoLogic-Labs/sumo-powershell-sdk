@@ -38,7 +38,7 @@ PSObject to present source
 You can pre-load the API credential with New-SumoSession cmdlet in script or passing in with Session parameter
 
 .LINK
-https://github.com/SumoLogic/sumo-powershell-sdk/blob/ps_gallery/docs/New-Source.md
+https://github.com/SumoLogic/sumo-powershell-sdk/blob/master/docs/New-Source.md
 
 .LINK
 https://help.sumologic.com/APIs/01Collector-Management-API/
