@@ -61,31 +61,23 @@ function mockHttpCmdlet {
 }
 
 function cleanup {
-  $Script:testCollectorIds | ForEach-Object {
-    try {
-      Remove-Collector -Id $_ -Force
-    } catch { }
-  }
-  $Script:testCollectorIds = @()
+  Get-Collector -NamePattern "PowerShell_Test" | Remove-Collector -Force
 }
 
-$Script:testCollectorIds = @()
-
-function testCollector($suffix = "") {
+function testCollector($suffix = [guid]::NewGuid()) {
   $obj = New-Object -TypeName psobject -Property @{
     "collectorType" = "Hosted"
-    "name"          = "PowerShell_Test$suffix"
+    "name"          = "PowerShell_Test_$suffix"
     "description"   = "An example Hosted Collector"
     "category"      = "HTTP Collection"
     "timeZone"      = "UTC"
   }
   $res = New-Collector -Collector $obj
   $res | Should Not BeNullOrEmpty
-  $Script:testCollectorIds += $res.id
   $res
 }
 
-function testSource($collectorId, $suffix = "") {
+function testSource($collectorId, $suffix = [guid]::NewGuid()) {
   $obj = New-Object -TypeName psobject -Property @{
     "sourceType"                 = "HTTP"
     "name"                       = "Example_HTTP_Source_$suffix"
