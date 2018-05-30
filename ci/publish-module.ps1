@@ -1,4 +1,4 @@
-if ($env:appveyor_build_version) {
+if ($env:APPVEYOR_REPO_TAG -eq 'true') {
   try {
     $file = Get-Item -Path "$PSScriptRoot/../src/main/SumoLogic-Core/SumoLogic-Core.psd1"
     $regex = "ModuleVersion\s+=\s+'(\d\.\d\.\d+)'"
@@ -10,4 +10,6 @@ if ($env:appveyor_build_version) {
     Write-Warning "Fail to publish module to PowerShell Gallery"
     throw $_
   }
+} else {
+  Write-Warning "Skip Publishing to PowerShell Gallery since APPVEYOR_REPO_TAG = $env:APPVEYOR_REPO_TAG"
 }
