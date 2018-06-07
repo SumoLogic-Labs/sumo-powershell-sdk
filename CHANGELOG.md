@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.1 - 6/7/2018
+
+- Using environment variable `SUMOLOGIC_API_ENDPOINT` to override endpoint URL
+- Document and unit test update
+
 ## 1.1.0 - 5/30/2018
 
 - Document update
