@@ -27,7 +27,7 @@ It is free and open sourced, subject to the terms of the Apache 2.0 license.
 ```PowerShell
 # Download and install remotely from PowerShell Gallery
 Save-Module -Name SumoLogic-Core -Path <path> # Save locally
-Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator priveldge
+Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator privilege
 # Alternatively, from local github clone
 Import-Module $repo/src/main/SumoLogic-Core
 ```
@@ -42,7 +42,7 @@ Get-Help Get-Collector -Full # Get help and samples for cmdlets
 
 ### 4. Start to use cmdlets
 
-#### Setup a session conntecting to SumoLogic deployment
+#### Setup a session connecting to SumoLogic deployment
 
 Before calling any API function, you need to setup a `SumoSession` and store it into current PowerShell session
 
@@ -69,4 +69,4 @@ Get-Collector # Query all collectors in current account
 
 ## Issues and Feature Request
 
-Report any issue or idea through [Git Hub](https://github.com/SumoLogic/sumo-powershell-sdk)
+Report any issue or idea through [Github](https://github.com/SumoLogic/sumo-powershell-sdk)
