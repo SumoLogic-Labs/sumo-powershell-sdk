@@ -1,4 +1,4 @@
-version: 1.1.0-{build}
+version: 1.1.1-{build}-{branch}
 
 environment:
   appveyor_test_acc_id:
@@ -11,13 +11,9 @@ environment:
 install:
   - ps: Install-Module -Name PSScriptAnalyzer -Force
   - ps: Install-Module -Name Pester -Force
-  - ps: Install-Module -Name platyPS -Force
-  - ps: Install-Module -Name posh-git -Force
   - pwsh: Install-Module -Name PSScriptAnalyzer -Force
   - pwsh: Install-Module -Name Pester -Force
-  - pwsh: Install-Module -Name platyPS -Force
-  - pwsh: Install-Module -Name posh-git -Force
-
+  
 build: off
 
 test_script:

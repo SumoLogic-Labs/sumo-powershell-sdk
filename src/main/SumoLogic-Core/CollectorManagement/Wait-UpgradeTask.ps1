@@ -69,5 +69,5 @@ function Wait-UpgradeTask {
     $ids | ForEach-Object {
       Get-UpgradeTask -Session $Session -UpgradeId $_
     }
-  }  
+  }
 }

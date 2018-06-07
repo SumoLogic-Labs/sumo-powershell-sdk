@@ -29,7 +29,7 @@ Import-Module -Name platyPS
 Invoke-Pester src/test
 ```
 
-- Generate mark-down help documents
+- Generate markdown help documents
 
 ```PowerShell
 Import-Module ./src/main/SumoLogic-Core/SumoLogic-Core.psd1 -Force

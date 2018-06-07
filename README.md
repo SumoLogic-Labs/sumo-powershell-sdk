@@ -27,7 +27,7 @@ It is free and open sourced, subject to the terms of the Apache 2.0 license.
 ```PowerShell
 # Download and install remotely from PowerShell Gallery
 Save-Module -Name SumoLogic-Core -Path <path> # Save locally
-Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator priveldge
+Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator privilege
 # Alternatively, from local github clone
 Import-Module $repo/src/main/SumoLogic-Core
 ```
@@ -42,10 +42,31 @@ Get-Help Get-Collector -Full # Get help and samples for cmdlets
 
 ### 4. Start to use cmdlets
 
+#### Setup a session connecting to SumoLogic deployment
+
+Before calling any API function, you need to setup a `SumoSession` and store it into current PowerShell session
+
+```PowerShell
+$cred = Get-Credential # Following the prompt, input access ID as User and access Key as Password
+New-SumoSession -Credential $cred # This cmdlet will try to use the access Key/ID to connect to correct deployment
+# You can also using string to pass access Key/Id as following, but it is not recommended since it will expose the access key as plain text
+# $accessId = "<access key>"
+# $accessKeyAsSecureString = ConvertTo-SecureString "<access Id>" -AsPlainText -Force
+# New-SumoSession -AccessId $accessId -AccessKeyAsSecureString $accessKeyAsSecureString | Out-Null
+```
+
+**NOTE:**
+
+- If you want specific the deployment to connect, set environment variable `SUMOLOGIC_API_ENDPOINT` as the value of "API endpoint" in [this page](https://help.sumologic.com/APIs/General-API-Information/Sumo-Logic-Endpoints-and-Firewall-Security).
+- You can also store the `SumoSession` into a variable and call following cmdlets with parameter `SumoAPISession` for switching between different deployments/accounts
+
+#### Navigate the cmdlets to use
+
 ```PowerShell
 Get-Command -Module SumoLogic-Core # Navigate all commands in the module
+Get-Collector # Query all collectors in current account
 ```
 
 ## Issues and Feature Request
 
-Report any issue or idea through [Git Hub](https://github.com/SumoLogic/sumo-powershell-sdk)
+Report any issue or idea through [Github](https://github.com/SumoLogic/sumo-powershell-sdk)

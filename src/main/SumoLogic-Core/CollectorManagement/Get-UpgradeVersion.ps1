@@ -3,7 +3,7 @@
 Get the collector version(s) for upgrading
 
 .DESCRIPTION
-Get the latest version string of collector from SumoLogic server and it can be used for upgrading collector in following process 
+Get the latest version string of collector from SumoLogic server and it can be used for upgrading collector in following process
 
 .PARAMETER Session
 An instance of SumoAPISession which contains API endpoint and credential
@@ -13,7 +13,7 @@ If true, return a list of string with all available collector versions
 
 .EXAMPLE
 Get-UpgradeVersion
-Get a string contains latest version of collector for upgrading    
+Get a string contains latest version of collector for upgrading
 
 .EXAMPLE
 Get-UpgradeVersion -ListAvailable
