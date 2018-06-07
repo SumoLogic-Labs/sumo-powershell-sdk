@@ -25,7 +25,7 @@ New-Source -CollectorId 12345 -Source $source
 Create a source under collector 12345 with the definition in $source
 
 .EXAMPLE
-Get-Content source.json -Raw | New-Source -CollectorId 12345 
+Get-Content source.json -Raw | New-Source -CollectorId 12345
 Create a source under collector 12345 with the definition in source.json
 
 .INPUTS

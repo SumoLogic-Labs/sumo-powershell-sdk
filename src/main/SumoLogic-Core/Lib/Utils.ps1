@@ -32,7 +32,7 @@ function getSession([System.Management.Automation.PSCredential]$credential) {
     }
   }
   $err | ForEach-Object { Write-Error $_ }
-} 
+}
 function getHex([long]$id) {
   "{0:X16}" -f $id
 }
@@ -50,8 +50,8 @@ function urlDecode([string]$str) {
 }
 
 function getQueryString([hashtable]$form) {
-  $sections = $form.GetEnumerator() | Sort-Object -Property Name | ForEach-Object { 
-    "{0}={1}" -f (urlEncode($_.Name)), (urlEncode($_.Value)) 
+  $sections = $form.GetEnumerator() | Sort-Object -Property Name | ForEach-Object {
+    "{0}={1}" -f (urlEncode($_.Name)), (urlEncode($_.Value))
   }
   $sections -join "&"
 }
@@ -353,5 +353,5 @@ function waitForMultipleUpgrades([SumoAPISession]$Session, [array]$UpgradeIds, [
       "$na      " | Write-Host -NoNewLine -ForegroundColor Yellow
     }
     Start-Sleep -Milliseconds $RefreshMs
-  } while ($completed.Length -lt $UpgradeIds.Length)  
+  } while ($completed.Length -lt $UpgradeIds.Length)
 }
