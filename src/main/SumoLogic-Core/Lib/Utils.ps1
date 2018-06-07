@@ -12,6 +12,9 @@ $Script:apiEndpoints = @(
 )
 
 function getSession([System.Management.Automation.PSCredential]$credential) {
+  if ($env:SUMOLOGIC_API_ENDPOINT) {
+    $apiEndpoints = @($env:SUMOLOGIC_API_ENDPOINT) + $apiEndpoints
+  }
   foreach ($apiEndpoint in $apiEndpoints) {
     $url = $apiEndpoint + "collectors?limit=1"
     try {
