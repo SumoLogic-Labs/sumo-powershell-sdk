@@ -1,4 +1,4 @@
-. $PSScriptRoot/Global.ps1
+. $PSScriptRoot/../Common/Global.ps1
 . $ModuleRoot/Lib/Definitions.ps1
 . $ModuleRoot/Lib/Utils.ps1
 
@@ -133,117 +133,121 @@ Describe "invokeSumoAPI" {
 
 Describe "invokeSumoWebRequest" {
   
-  $session = [SumoAPISession]::new("https://localhost/", $null)
-  
   It "should call with Invoke-WebRequest" {
-    Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility) } -ModuleName $ModuleName 
-    invokeSumoWebRequest -session $session -headers @{} -method Get -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It -ModuleName $ModuleName 
-    invokeSumoWebRequest -session $session -headers @{} -method Post -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It -ModuleName $ModuleName 
+    
+    Mock invokeSumoAPI {} -Verifiable -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility) }
+
+    invokeSumoWebRequest -session $null -headers @{} -method Get -function "foo/bar" -content @{}
+    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It
+    invokeSumoWebRequest -session $null -headers @{} -method Post -function "foo/bar" -content @{}
+    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It
   }
 }
 
 Describe "invokeSumoRestMethod" {
   
-  $session = [SumoAPISession]::new("https://localhost/", $null)
-  
   It "should call with Invoke-RestMethod" {
-    Mock invokeSumoAPI {} -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) } -ModuleName $ModuleName
+
+    Mock invokeSumoAPI {} -Verifiable -ParameterFilter { $cmdlet -and $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) }
+
     invokeSumoRestMethod -session $session -headers @{} -method Get -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It -ModuleName $ModuleName
+    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It
     invokeSumoRestMethod -session $session -headers @{} -method Post -function "foo/bar" -content @{}
-    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It -ModuleName $ModuleName
+    Assert-MockCalled invokeSumoAPI -Exactly 2 -Scope It
   }
 }
 
 Describe "startSearchJob" {
+
   It "should call invokeSumoAPI with correct parameters" {
     
-    $_session = [SumoAPISession]::new("https://localhost/", $null)
     $_query = "_sourceCategory=service"
     $_from = (Get-Date "2018-08-08T00:00:00Z").AddDays(-1)
     $_to = (Get-Date "2018-08-08T00:00:00Z")
     $_timeZone = "Asia/Shanghai"
 
-    Mock invokeSumoAPI {} -ParameterFilter {
-      $session -eq $_session -and `
-        $method -eq [Microsoft.PowerShell.Commands.WebRequestMethod]::Post -and `
+    Mock invokeSumoAPI {} -Verifiable -ParameterFilter {
+      $method -eq [Microsoft.PowerShell.Commands.WebRequestMethod]::Post -and `
         $function -eq "search/jobs" -and `
-        $query["query"] -eq $_query -and `
-        $query["from"] -eq 1533600000000 -and `
-        $query["to"] -eq 1533686400000 -and `
-        $query["timeZone"] -eq $_timeZone -and `
+        !$query -and $body -and `
         $cmdlet -eq (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility) 
-    } -ModuleName $ModuleName
-    startSearchJob $_session $_query $_from $_to $_timeZone
-    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It -ModuleName $ModuleName
+    }
+
+    startSearchJob $null $_query $_from $_to $_timeZone
+    Assert-MockCalled invokeSumoAPI -Exactly 1 -Scope It
   }
 }
 
 Describe "getSearchResult" {
-  
+
   It "should throw exception if result is not ready" {
+    
     Mock invokeSumoRestMethod {
-      New-Object -TypeName psobject -Property @{ state = "NOT STARTED" }
-    } -ParameterFilter { $function -eq "search/jobs/0" } -ModuleName $ModuleName
+      ConvertFrom-Json @'
+      {
+        "state":"NOT STARTED"
+      }
+'@
+    } -ParameterFilter { $function -eq "search/jobs/0" }
+    
     {
-      getSearchResult -session $null -id 0 -limit 1 -type "Record"
+      getSearchResult -session $null -id 0 -limit 1 -type Record
     } | Should -Throw "Result is not ready"
   }
 
   It "should return message results" {
-    Mock invokeSumoRestMethod {
-      ConvertFrom-Json @'
-    {
-      "state":"DONE GATHERING RESULTS",
-      "messageCount":3,
-      "histogramBuckets":[],
-      "pendingErrors":[],
-      "pendingWarnings":[],
-      "recordCount":3
-    }
-'@
-    } -ParameterFilter { $function -eq "search/jobs/0" } -ModuleName $ModuleName
 
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
-    {
-      "fields":[
-        {
-          "name":"_messageid",
-          "fieldType":"long",
-          "keyField":false
-        },
-        {
-          "name":"_raw",
-          "fieldType":"string",
-          "keyField":false
-        }
-      ],
-      "messages":[
-        {
-          "map":{
-            "_messageid":"-9223372036854773763",
-            "_raw":"2013-01-28 13:09:10,333 -0800 INFO Line 1"
-          }
-        },
-        {
-          "map":{
-            "_messageid":"-9223372036854773764",
-            "_raw":"2013-01-28 13:09:11,333 -0800 INFO Line 2"
-          }
-        },
-        {
-          "map":{
-            "_messageid":"-9223372036854773765",
-            "_raw":"2013-01-28 13:19:11,333 -0800 INFO Line 3"
-          }
-        }
-      ]
-    }
+      {
+        "state":"DONE GATHERING RESULTS",
+        "messageCount":3,
+        "histogramBuckets":[],
+        "pendingErrors":[],
+        "pendingWarnings":[],
+        "recordCount":3
+      }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0/messages" } -ModuleName $ModuleName
+    } -ParameterFilter { $function -eq "search/jobs/0" }
+    Mock invokeSumoRestMethod {
+      ConvertFrom-Json @'
+      {
+        "fields":[
+          {
+            "name":"_messageid",
+            "fieldType":"long",
+            "keyField":false
+          },
+          {
+            "name":"_raw",
+            "fieldType":"string",
+            "keyField":false
+          }
+        ],
+        "messages":[
+          {
+            "map":{
+              "_messageid":"-9223372036854773763",
+              "_raw":"2013-01-28 13:09:10,333 -0800 INFO Line 1"
+            }
+          },
+          {
+            "map":{
+              "_messageid":"-9223372036854773764",
+              "_raw":"2013-01-28 13:09:11,333 -0800 INFO Line 2"
+            }
+          },
+          {
+            "map":{
+              "_messageid":"-9223372036854773765",
+              "_raw":"2013-01-28 13:19:11,333 -0800 INFO Line 3"
+            }
+          }
+        ]
+      }
+'@
+    } -ParameterFilter { $function -eq "search/jobs/0/messages" }
+
     $result = getSearchResult -session $null -id 0 -limit 3 -type "Message"
     $result | Should Not BeNullOrEmpty
     $result.Count | Should Be 3
@@ -251,6 +255,7 @@ Describe "getSearchResult" {
   } 
   
   It "should return record results" {
+
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
     {
@@ -262,8 +267,7 @@ Describe "getSearchResult" {
       "recordCount":3
     }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0" } -ModuleName $ModuleName
-
+    } -ParameterFilter { $function -eq "search/jobs/0" }
     Mock invokeSumoRestMethod {
       ConvertFrom-Json @'
     {
@@ -301,7 +305,8 @@ Describe "getSearchResult" {
       ]
     }
 '@
-    } -ParameterFilter { $function -eq "search/jobs/0/records" } -ModuleName $ModuleName
+    } -ParameterFilter { $function -eq "search/jobs/0/records" }
+
     $result = getSearchResult -session $null -id 0 -limit 3 -type "Record"
     $result | Should Not BeNullOrEmpty
     $result.Count | Should Be 3
@@ -426,7 +431,7 @@ Describe "convertSourceToJson" {
         "encoding":"UTF-8",
         "pathExpression":"/usr/sumo/logs/collector/collector.gc.log*",
         "blacklist":[],
-        "sourceType":"LocalFile",
+        "sourceType":"LocalFile"
       }
     }
 '@

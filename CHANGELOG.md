@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.2 - 7/31/2018
+
+- Fix #18 - Start-SearchJob
+
 ## 1.1.1 - 6/7/2018
 
 - Using environment variable `SUMOLOGIC_API_ENDPOINT` to override endpoint URL
