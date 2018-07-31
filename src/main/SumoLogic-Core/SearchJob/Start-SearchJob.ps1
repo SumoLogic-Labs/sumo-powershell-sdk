@@ -71,7 +71,9 @@ function Start-SearchJob {
       $TimeZone = "UTC"
     }
     if ($To -le $From) {
-      throw "Time range [$From to $To] is illegal"
+      $_from = $From.ToUniversalTime().ToString('o')
+      $_to = $To.ToUniversalTime().ToString('o')
+      throw "Time range [$_from to $_to] is illegal"
     }
     if ($Force -or $pscmdlet.ShouldProcess($session)) {
       $job = startSearchJob -Session $Session -Query $Query -From $From -To $To -TimeZone $TimeZone

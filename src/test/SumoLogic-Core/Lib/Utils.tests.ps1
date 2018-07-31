@@ -431,7 +431,7 @@ Describe "convertSourceToJson" {
         "encoding":"UTF-8",
         "pathExpression":"/usr/sumo/logs/collector/collector.gc.log*",
         "blacklist":[],
-        "sourceType":"LocalFile",
+        "sourceType":"LocalFile"
       }
     }
 '@

@@ -19,8 +19,8 @@ Describe "Start-SearchJob" {
     Mock startSearchJob {} -Verifiable -ModuleName $ModuleName
 
     {
-      Start-SearchJob -Query "q" -From (Get-Date "1989-07-25T00:00:00Z") -To (Get-Date "1981-02-19T00:00:00Z") -TimeZone "Asia/Shanghai"
-    } | Should -Throw "Time range [07/24/1989 17:00:00 to 02/18/1981 16:00:00] is illegal"
+      Start-SearchJob -Query "q" -From (Get-Date "1989-07-25T03:00:00Z") -To (Get-Date "1981-02-19T07:00:00Z") -TimeZone "Asia/Shanghai"
+    } | Should -Throw "Time range [1989-07-25T03:00:00.0000000Z to 1981-02-19T07:00:00.0000000Z] is illegal"
     Assert-MockCalled startSearchJob -Exactly 0 -Scope It -ModuleName $ModuleName
   }
 
