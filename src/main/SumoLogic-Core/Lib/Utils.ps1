@@ -21,17 +21,14 @@ function getSession([System.Management.Automation.PSCredential]$credential) {
       $res = Invoke-RestMethod -Uri $url -Headers $defaultHeaders -Method Get `
         -Credential $credential -SessionVariable webSession -ErrorAction SilentlyContinue -ErrorVariable err
       if ($res) {
-        return New-Object -TypeName SumoAPISession -Property @{
-          "Endpoint" = $apiEndpoint
-          "WebSession" = $webSession
-        }
+        return [SumoAPISession]::new($apiEndpoint, $webSession)
       }
     }
     catch {
       Write-Verbose "An error occurred when calling $apiEndpoint."
     }
   }
-  $err | ForEach-Object { Write-Error $_ }
+  $err | ForEach-Object { Write-Verbose $_ }
 }
 function getHex([long]$id) {
   "{0:X16}" -f $id
@@ -84,7 +81,9 @@ function invokeSumoAPI([SumoAPISession]$session,
     } else {
       & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -ErrorVariable err
     }
-    $err | ForEach-Object { Write-Error $_ }
+    if ($err) {
+      $err | ForEach-Object { Write-Error $_ }
+    }
   }
 
 function invokeSumoWebRequest([SumoAPISession]$session,
@@ -140,7 +139,7 @@ function startSearchJob ([SumoAPISession]$session, [string]$query, [datetime]$fr
     "to"       = $toT
     "timeZone" = $timeZone
   }
-  invokeSumoRestMethod -session $session -method Post -function "search/jobs" -query $q
+  invokeSumoRestMethod -session $session -method Post -function "search/jobs" -body ($q | ConvertTo-Json)
 }
 
 function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [SumoSearchResultType]$type) {
@@ -159,7 +158,6 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
   if ($limit -and ($limit -lt $total)) {
     $total = $limit
   }
-  $res = @()
   $page = 100
   $offset = 0
   while ($offset -le $total) {
@@ -174,14 +172,12 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
     else {
       $set = $res.messages
     }
-    foreach ($entry in $set) {
-      $res += $entry.map
-    }
+    $results = $set | ForEach-Object { $_.map }
     $text = "Downloaded {0} of {1} {2}" -f $offset, $total, $ttype
     Write-Progress -Activity "Downloading Result" -Status $text -PercentComplete ($offset / $total * 100)
     $offset += $page
   }
-  $res
+  $results
 }
 
 function convertCollectorToJson([psobject]$collector) {
