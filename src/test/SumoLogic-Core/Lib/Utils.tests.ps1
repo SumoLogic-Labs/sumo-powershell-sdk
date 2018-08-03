@@ -265,15 +265,16 @@ function mockPagedResult() {
     if ($function -eq "search/jobs/$id") {
       Write-Verbose "Mock calling $function"
       $true
-    } else {
+    }
+    else {
       $false
     }
   }
   Mock invokeSumoRestMethod {
     $count = $Global:__mockArgs["count"]
     $ttype = $Global:__mockArgs["ttype"]
-    $resultTemplate =  $Global:__mockArgs["resultTemplate"]
-    $entryTemplate =  $Global:__mockArgs["entryTemplate"]
+    $resultTemplate = $Global:__mockArgs["resultTemplate"]
+    $entryTemplate = $Global:__mockArgs["entryTemplate"]
     $result = ConvertFrom-Json $resultTemplate
     $offset = $query["offset"]
     $limit = $query["limit"]
@@ -294,7 +295,8 @@ function mockPagedResult() {
     if ($function -eq $Global:__mockArgs["functionTemplate"].Replace("ID", $id)) {
       Write-Verbose "Mock calling $function - Querry $($query["offset"]), $($query["limit"])"
       $true
-    } else {
+    }
+    else {
       $false
     }
   }
