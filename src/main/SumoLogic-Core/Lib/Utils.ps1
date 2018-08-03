@@ -71,20 +71,21 @@ function invokeSumoAPI([SumoAPISession]$session,
   [string]$body,
   $cmdlet) {
 
-    $url = $session.Endpoint + $function
-    if ($query) {
-      $qStr = getQueryString($query)
-      $url += "?" + $qStr
-    }
-    if ($method -ne [Microsoft.PowerShell.Commands.WebRequestMethod]::Get) {
-      & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
-    } else {
-      & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -ErrorVariable err
-    }
-    if ($err) {
-      $err | ForEach-Object { Write-Error $_ }
-    }
+  $url = $session.Endpoint + $function
+  if ($query) {
+    $qStr = getQueryString($query)
+    $url += "?" + $qStr
   }
+  if ($method -ne [Microsoft.PowerShell.Commands.WebRequestMethod]::Get) {
+    & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
+  }
+  else {
+    & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -ErrorVariable err
+  }
+  if ($err) {
+    $err | ForEach-Object { Write-Error $_ }
+  }
+}
 
 function invokeSumoWebRequest([SumoAPISession]$session,
   [hashtable]$headers = $Script:defaultHeaders,
@@ -92,7 +93,7 @@ function invokeSumoWebRequest([SumoAPISession]$session,
   [string]$function,
   [hashtable]$query,
   [string]$body) {
-    invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility)
+  invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-WebRequest -Module Microsoft.PowerShell.Utility)
 }
 
 function invokeSumoRestMethod([SumoAPISession]$session,
@@ -101,7 +102,7 @@ function invokeSumoRestMethod([SumoAPISession]$session,
   [string]$function,
   [hashtable]$query,
   [string]$body) {
-    invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility)
+  invokeSumoAPI $session $headers $method $function $query $body (Get-Command Invoke-RestMethod -Module Microsoft.PowerShell.Utility)
 }
 
 function getCollectorsByPage([SumoAPISession]$session, [int]$offset, [int]$limit) {
@@ -111,7 +112,8 @@ function getCollectorsByPage([SumoAPISession]$session, [int]$offset, [int]$limit
   }
   try {
     (invokeSumoRestMethod -session $Session -method Get -function "collectors" -query $query).collectors
-  } catch {
+  }
+  catch {
     @()
   }
 }
@@ -142,7 +144,7 @@ function startSearchJob ([SumoAPISession]$session, [string]$query, [datetime]$fr
   invokeSumoRestMethod -session $session -method Post -function "search/jobs" -body ($q | ConvertTo-Json)
 }
 
-function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [SumoSearchResultType]$type) {
+function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [SumoSearchResultType]$type, [int]$page) {
   $status = invokeSumoRestMethod -session $session -method Get -function "search/jobs/$id"
   if ($status.state -ne "DONE GATHERING RESULTS") {
     throw "Result is not ready"
@@ -158,13 +160,20 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
   if ($limit -and ($limit -lt $total)) {
     $total = $limit
   }
-  $page = 100
-  $offset = 0
-  while ($offset -le $total) {
+  [array]$results = @()
+  while ($results.Count -lt $total) {
     $func = "search/jobs/{0}/{1}" -f $id, $ttype
+    $lowerBound = $results.Count
+    $upperBound = if ($results.Count + $page -lt $total) {
+      $results.Count + $page
+    }
+    else {
+      $total
+    }
+    Write-Verbose "Requesting result $lowerBound - $upperBound ..."
     $res = invokeSumoRestMethod -session $session -method Get -function $func -query @{
-      "offset" = $offset
-      "limit" = $page
+      offset = $lowerBound
+      limit  = ($upperBound - $lowerBound)
     }
     if ([SumoSearchResultType]::Record -eq $type) {
       $set = $res.records
@@ -172,10 +181,14 @@ function getSearchResult ([SumoAPISession]$session, [string]$id, [int]$limit, [S
     else {
       $set = $res.messages
     }
-    $results = $set | ForEach-Object { $_.map }
-    $text = "Downloaded {0} of {1} {2}" -f $offset, $total, $ttype
-    Write-Progress -Activity "Downloading Result" -Status $text -PercentComplete ($offset / $total * 100)
-    $offset += $page
+    $set | ForEach-Object {
+      $results += $_.map
+    }
+    Write-Verbose "Got $($set.Count) results (Total: $($results.Count))"
+    if ($total -ne 0 -and $results.Count -lt $total) {
+      $text = "Downloaded {0} of {1} {2}" -f $results.Count, $total, $ttype
+      Write-Progress -Activity "Downloading Result" -Status $text -PercentComplete ($results.Count * 100 / $total)
+    }
   }
   $results
 }
@@ -223,14 +236,15 @@ function writeCollectorUpgradeStatus($collector, $upgrade) {
   getFullName $collector | Write-Host -NoNewline -ForegroundColor White
   if ($collector.alive) {
     "(alive) " | Write-Host -NoNewline -ForegroundColor Green
-  } else {
+  }
+  else {
     "(connection lost) " | Write-Host -NoNewline -ForegroundColor Red
   }
   if ((get-host).UI.RawUI.MaxWindowSize.Width -ge 150) {
     "on $($collector.osName)($($collector.osVersion)) $($collector.collectorVersion)=>$($upgrade.toVersion); " | Write-Host -NoNewline -ForegroundColor Gray
   }
   "STATUS: " | Write-Host -NoNewline -ForegroundColor White
-  switch($upgrade.status) {
+  switch ($upgrade.status) {
     0 {
       getStatusMessage $upgrade | Write-Host -NoNewline -ForegroundColor White
     }
@@ -267,7 +281,7 @@ function getCollectorUpgradeStatus($collector, $upgrade) {
 }
 
 function getStatusMessage($upgrade) {
-  switch($upgrade.status) {
+  switch ($upgrade.status) {
     0 {
       "Not started"
     }
@@ -281,7 +295,7 @@ function getStatusMessage($upgrade) {
       "Upgrade failed ($($upgrade.message))"
     }
     6 {
-     "Working on upgrade collector   "
+      "Working on upgrade collector   "
     }
   }
 }
@@ -318,7 +332,7 @@ function waitForMultipleUpgrades([SumoAPISession]$Session, [array]$UpgradeIds, [
   $spinner = "|", "/", "-", "\"
   do {
     $counter++
-    foreach($upgradeId in $UpgradeIds) {
+    foreach ($upgradeId in $UpgradeIds) {
       if ($completed -contains $upgradeId) {
         continue
       }
@@ -327,10 +341,12 @@ function waitForMultipleUpgrades([SumoAPISession]$Session, [array]$UpgradeIds, [
         Write-Warning "Cannot get upgrade with id $upgradeId"
         $completed += $upgradeId
         $na++
-      } elseif ($upgrade.status -eq 2) {
+      }
+      elseif ($upgrade.status -eq 2) {
         $completed += $upgradeId
         $succeed++
-      } elseif ($upgrade.status -eq 3) {
+      }
+      elseif ($upgrade.status -eq 3) {
         $completed += $upgradeId
         $failed++
       }

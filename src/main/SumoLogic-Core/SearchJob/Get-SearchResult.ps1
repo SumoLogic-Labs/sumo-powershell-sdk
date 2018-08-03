@@ -52,6 +52,8 @@ function Get-SearchResult {
     [int]$Limit
   )
 
-  getSearchResult $Session $Id $Limit $Type
+  $page = 100
+
+  getSearchResult -session $Session -id $Id -limit $Limit -type $Type -page $page
 
 }
