@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.3 - 8/3/2018
+
+- Fix #20 - Get-SearchResult
+
 ## 1.1.2 - 7/31/2018
 
 - Fix #18 - Start-SearchJob

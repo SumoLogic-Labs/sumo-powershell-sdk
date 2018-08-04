@@ -178,6 +178,130 @@ Describe "startSearchJob" {
   }
 }
 
+function setMockArgsForMessages($id, $count) {
+  $Global:__mockArgs = @{id = $id; count = $count; ttype = "messages"}
+  $Global:__mockArgs["statusTemplate"] = @'
+  {
+    "state":"DONE GATHERING RESULTS",
+    "messageCount":COUNT,
+    "histogramBuckets":[],
+    "pendingErrors":[],
+    "pendingWarnings":[]
+  }
+'@.Replace("COUNT", $count)
+  $Global:__mockArgs["resultTemplate"] = @'
+  {
+    "fields":[
+      {
+        "name":"_sourcecategory",
+        "fieldType":"string",
+        "keyField":true
+      },
+      {
+        "name":"_count",
+        "fieldType":"int",
+        "keyField":false
+      }
+    ]
+  }
+'@
+  $Global:__mockArgs["entryTemplate"] = @'
+  {
+    "map":{
+      "_messageid":"INDEX",
+      "_raw":"2013-01-28 13:09:11,INDEX -0800 INFO - Line of INDEX"
+    }
+  }
+'@
+  $Global:__mockArgs["functionTemplate"] = "search/jobs/ID/messages"
+}
+
+function setMockArgsForRecords($id, $count) {
+  $Global:__mockArgs = @{id = $id; count = $count; ttype = "records"}
+  $Global:__mockArgs["statusTemplate"] = @'
+  {
+    "state":"DONE GATHERING RESULTS",
+    "histogramBuckets":[],
+    "pendingErrors":[],
+    "pendingWarnings":[],
+    "recordCount":COUNT
+  }
+'@
+  $Global:__mockArgs["resultTemplate"] = @'
+  {
+    "fields":[
+      {
+        "name":"_sourcecategory",
+        "fieldType":"string",
+        "keyField":true
+      },
+      {
+        "name":"_count",
+        "fieldType":"int",
+        "keyField":false
+      }
+    ]
+  }
+'@
+  $Global:__mockArgs["entryTemplate"] = @'
+  {
+    "map":{
+      "_count":"INDEX",
+      "_sourcecategory":"service"
+    }
+  }
+'@
+  $Global:__mockArgs["functionTemplate"] = "search/jobs/ID/records"
+}
+
+function mockPagedResult() {
+  Mock invokeSumoRestMethod {
+    $count = $Global:__mockArgs["count"]
+    $result = ConvertFrom-Json $Global:__mockArgs["statusTemplate"].Replace("COUNT", $count)
+    Write-Verbose ($result | ConvertTo-Json)
+    $result
+  } -ParameterFilter {
+    $id = $Global:__mockArgs["id"]
+    if ($function -eq "search/jobs/$id") {
+      Write-Verbose "Mock calling $function"
+      $true
+    }
+    else {
+      $false
+    }
+  }
+  Mock invokeSumoRestMethod {
+    $count = $Global:__mockArgs["count"]
+    $ttype = $Global:__mockArgs["ttype"]
+    $resultTemplate = $Global:__mockArgs["resultTemplate"]
+    $entryTemplate = $Global:__mockArgs["entryTemplate"]
+    $result = ConvertFrom-Json $resultTemplate
+    $offset = $query["offset"]
+    $limit = $query["limit"]
+    [array]$messages = @()
+    for ($i = 0; $i -lt $limit ; $i += 1) {
+      $index = $offset + $i
+      if ($index -lt $count) {
+        $map = ConvertFrom-Json $entryTemplate.Replace("INDEX", $index)
+        $messages += $map
+      }
+    }
+    Write-Verbose ("Mocking $($messages.Count) results...")
+    $result | Add-Member -MemberType NoteProperty -Name $ttype -Value $messages
+    Write-Verbose ($result | ConvertTo-Json)
+    $result
+  } -ParameterFilter {
+    $id = $Global:__mockArgs["id"]
+    if ($function -eq $Global:__mockArgs["functionTemplate"].Replace("ID", $id)) {
+      Write-Verbose "Mock calling $function - Querry $($query["offset"]), $($query["limit"])"
+      $true
+    }
+    else {
+      $false
+    }
+  }
+}
+
 Describe "getSearchResult" {
 
   It "should throw exception if result is not ready" {
@@ -197,121 +321,97 @@ Describe "getSearchResult" {
 
   It "should return message results" {
 
-    Mock invokeSumoRestMethod {
-      ConvertFrom-Json @'
-      {
-        "state":"DONE GATHERING RESULTS",
-        "messageCount":3,
-        "histogramBuckets":[],
-        "pendingErrors":[],
-        "pendingWarnings":[],
-        "recordCount":3
-      }
-'@
-    } -ParameterFilter { $function -eq "search/jobs/0" }
-    Mock invokeSumoRestMethod {
-      ConvertFrom-Json @'
-      {
-        "fields":[
-          {
-            "name":"_messageid",
-            "fieldType":"long",
-            "keyField":false
-          },
-          {
-            "name":"_raw",
-            "fieldType":"string",
-            "keyField":false
-          }
-        ],
-        "messages":[
-          {
-            "map":{
-              "_messageid":"-9223372036854773763",
-              "_raw":"2013-01-28 13:09:10,333 -0800 INFO Line 1"
-            }
-          },
-          {
-            "map":{
-              "_messageid":"-9223372036854773764",
-              "_raw":"2013-01-28 13:09:11,333 -0800 INFO Line 2"
-            }
-          },
-          {
-            "map":{
-              "_messageid":"-9223372036854773765",
-              "_raw":"2013-01-28 13:19:11,333 -0800 INFO Line 3"
-            }
-          }
-        ]
-      }
-'@
-    } -ParameterFilter { $function -eq "search/jobs/0/messages" }
+    setMockArgsForMessages -id 0 -count 3
+    mockPagedResult
+    $result = getSearchResult -session $null -id 0 -limit 3 -type "Message" -page 100
+    $Global:__mockArgs = $null
 
-    $result = getSearchResult -session $null -id 0 -limit 3 -type "Message"
     $result | Should Not BeNullOrEmpty
     $result.Count | Should Be 3
-    $result[0]._messageid | Should Be "-9223372036854773763"
+    $result[0]._messageid | Should Be "0"
   } 
   
   It "should return record results" {
 
-    Mock invokeSumoRestMethod {
-      ConvertFrom-Json @'
-    {
-      "state":"DONE GATHERING RESULTS",
-      "messageCount":3,
-      "histogramBuckets":[],
-      "pendingErrors":[],
-      "pendingWarnings":[],
-      "recordCount":3
-    }
-'@
-    } -ParameterFilter { $function -eq "search/jobs/0" }
-    Mock invokeSumoRestMethod {
-      ConvertFrom-Json @'
-    {
-      "fields":[
-        {
-          "name":"_sourcecategory",
-          "fieldType":"string",
-          "keyField":true
-        },
-        {
-          "name":"_count",
-          "fieldType":"int",
-          "keyField":false
-        }
-      ],
-      "records":[
-        {
-          "map":{
-            "_count":"90",
-            "_sourcecategory":"service"
-          }
-        },
-        {
-          "map":{
-            "_count":"80",
-            "_sourcecategory":"service"
-          }
-        },
-        {
-          "map":{
-            "_count":"70",
-            "_sourcecategory":"service"
-          }
-        }
-      ]
-    }
-'@
-    } -ParameterFilter { $function -eq "search/jobs/0/records" }
+    setMockArgsForRecords -id 1 -count 5
+    mockPagedResult
+    $result = getSearchResult -session $null -id 1 -type "Record" -page 100
+    $Global:__mockArgs = $null
 
-    $result = getSearchResult -session $null -id 0 -limit 3 -type "Record"
     $result | Should Not BeNullOrEmpty
-    $result.Count | Should Be 3
-    $result[0]._count | Should Be 90
+    $result.Count | Should Be 5
+    $result[3]._count | Should Be 3
+  }
+  
+  It "should return only limit items even if result has more" {
+    
+    setMockArgsForRecords -id 2 -count 5
+    mockPagedResult
+    $result = getSearchResult -session $null -id 2 -limit 2 -type "Record" -page 100
+    $Global:__mockArgs = $null
+
+    $result | Should Not BeNullOrEmpty
+    $result.Count | Should Be 2
+    $result[1]._count | Should Be 1
   } 
+
+  It "should return empty array if there is no result" {
+    
+    setMockArgsForRecords -id 3 -count 0
+    mockPagedResult
+    $result = getSearchResult -session $null -id 3 -type "Record" -page 100
+    $Global:__mockArgs = $null
+    
+    $result | Should Not Be Null
+    $result.Count | Should Be 0
+
+  }
+
+  It "should return all results if more than one page" {
+    
+    setMockArgsForRecords -id 4 -count 55
+    mockPagedResult
+    $result = getSearchResult -session $null -id 4 -type "Record" -page 10
+    $Global:__mockArgs = $null
+    
+    $result.Count | Should Be 55
+    $result[49]._count | Should Be 49
+    $result[54]._count | Should Be 54
+
+  }
+
+  It "should truncate to limit if more results returned" {
+    
+    setMockArgsForRecords -id 5 -count 55
+    mockPagedResult
+    $result = getSearchResult -session $null -id 5 -type "Record" -limit 50 -page 10
+    $Global:__mockArgs = $null
+    
+    $result.Count | Should Be 50
+    $result[49]._count | Should Be 49
+  }
+
+  It "should stop at total if limit is larger than total" {
+
+    setMockArgsForRecords -id 6 -count 47
+    mockPagedResult
+    $result = getSearchResult -session $null -id 6 -type "Record" -limit 50 -page 10
+    $Global:__mockArgs = $null
+    
+    $result.Count | Should Be 47
+    $result[46]._count | Should Be 46
+  }
+
+  It "should truncate to limit if not fill up last page" {
+    
+    setMockArgsForRecords -id 5 -count 55
+    mockPagedResult
+    $result = getSearchResult -session $null -id 5 -type "Record" -limit 47 -page 10
+    $Global:__mockArgs = $null
+    
+    $result.Count | Should Be 47
+    $result[46]._count | Should Be 46
+  }
 }
 
 Describe "convertCollectorToJson" {
