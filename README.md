@@ -5,10 +5,6 @@
 The SumoLogic PowerShell module is for using PowerShell to manage collectors/sources, upgrade collectors, and search logs with [SumoLogic API](https://help.sumologic.com/APIs)
 This is a community-supported PowerShell module, free and open sourced; subject to the terms of the Apache 2.0 license.
 
-| TLS Deprecation Notice |
-| --- |
-| In keeping with industry standard security best practices, as of May 31, 2018, the Sumo Logic service will only support TLS version 1.2 going forward. Verify that all connections to Sumo Logic endpoints are made from software that supports TLS 1.2. |
-
 ## Getting Started
 
 ### 1. Create a SumoLogic account and get API access Id/Key
@@ -73,3 +69,7 @@ Get-Collector # For example, Query all collectors in current account
 ## Issues and Feature Request
 
 Report any issue or idea through [Github](https://github.com/SumoLogic/sumo-powershell-sdk)
+
+### TLS 1.2 Requirement
+
+Sumo Logic only accepts connections from clients using TLS version 1.2 or greater. To utilize the content of this repo, ensure that it's running in an execution environment that is configured to use TLS 1.2 or greater.
