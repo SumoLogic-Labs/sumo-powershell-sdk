@@ -4,11 +4,12 @@ $Script:defaultHeaders = @{
 }
 
 $Script:apiEndpoints = @(
+  "https://api.au.sumologic.com/api/v1/"
+  "https://api.de.sumologic.com/api/v1/"
+  "https://api.eu.sumologic.com/api/v1/"
+  "https://api.jp.sumologic.com/api/v1/"
   "https://api.sumologic.com/api/v1/"
   "https://api.us2.sumologic.com/api/v1/"
-  "https://api.au.sumologic.com/api/v1/"
-  "https://api.eu.sumologic.com/api/v1/"
-  "https://api.de.sumologic.com/api/v1/"
 )
 
 function getSession([System.Management.Automation.PSCredential]$credential) {
@@ -77,6 +78,11 @@ function invokeSumoAPI([SumoAPISession]$session,
     $url += "?" + $qStr
   }
   if ($method -ne [Microsoft.PowerShell.Commands.WebRequestMethod]::Get) {
+    Write-Verbose "Cmdlet: " + $cmdlet
+    Write-Verbose "Headers: " + $headers
+    Write-Verbose "Method: " + $method
+    Write-Verbose "WebSession: " + $session.WebSession
+    Write-Verbose "Body: " + $body
     & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
   }
   else {
