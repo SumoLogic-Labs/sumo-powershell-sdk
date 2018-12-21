@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.4 - 12/21/2018
+
+- Add JP endpoint information
+
 ## 1.1.3 - 8/3/2018
 
 - Fix #20 - Get-SearchResult
