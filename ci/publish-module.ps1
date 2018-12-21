@@ -1,7 +1,7 @@
 $finalVersion = ""
 
 if(-not [string]::IsNullOrWhiteSpace($env:APPVEYOR_REPO_TAG_NAME)){
-  $finalVersion = $env:APPVEYOR_REPO_TAG_NAME
+  $finalVersion = $env:APPVEYOR_REPO_TAG_NAME.Trim('v')
 } else {
   $finalVersion = $env:APPVEYOR_BUILD_VERSION
 }
