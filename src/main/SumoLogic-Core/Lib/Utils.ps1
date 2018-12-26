@@ -78,11 +78,11 @@ function invokeSumoAPI([SumoAPISession]$session,
     $url += "?" + $qStr
   }
   if ($method -ne [Microsoft.PowerShell.Commands.WebRequestMethod]::Get) {
-    Write-Verbose "Cmdlet: " + $cmdlet
-    Write-Verbose "Headers: " + $headers
-    Write-Verbose "Method: " + $method
-    Write-Verbose "WebSession: " + $session.WebSession
-    Write-Verbose "Body: " + $body
+    Write-Verbose "Cmdlet: $cmdlet"
+    Write-Verbose "Headers: $headers"
+    Write-Verbose "Method: $method"
+    Write-Verbose "WebSession: ${session.WebSession}"
+    Write-Verbose "Body: $body"
     & $cmdlet -Uri $url -Headers $headers -Method $method -WebSession $session.WebSession -Body $body -ErrorVariable err
   }
   else {
