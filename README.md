@@ -1,6 +1,6 @@
 # SumoLogic PowerShell Module
 
-[![Build status](https://ci.appveyor.com/api/projects/status/t22p5jaq164ixqq1?svg=true)](https://ci.appveyor.com/project/bin3377/sumo-powershell-sdk)  [![powershellgallery](https://img.shields.io/powershellgallery/v/SumoLogic-Core.svg)](https://www.powershellgallery.com/packages/SumoLogic-Core)
+[![Build status](https://ci.appveyor.com/api/projects/status/w4l6bgj56dxlaoen?svg=true)](https://ci.appveyor.com/project/bin3377/sumo-powershell-sdk)  [![powershellgallery](https://img.shields.io/powershellgallery/v/SumoLogic-Core.svg?logo=PowerShell&logoColor=C0C0C0)](https://www.powershellgallery.com/packages/SumoLogic-Core)
 
 The SumoLogic PowerShell module is for using PowerShell to manage collectors/sources, upgrade collectors, and search logs with [SumoLogic API](https://help.sumologic.com/APIs)
 This is a community-supported PowerShell module, free and open sourced; subject to the terms of the Apache 2.0 license.
