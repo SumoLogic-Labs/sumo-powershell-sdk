@@ -2,11 +2,11 @@ version: 0.0.0.{build}
 
 environment:
   appveyor_test_acc_id:
-    secure: QI49XVfnQ5PE8CmerKIE1g==
+    secure: BFeOaEsaan4i2Kq91g5jEA==
   appveyor_test_acc_key:
-    secure: 88bcAC0CMrhBzXkNA7FYaHHp7h8yfz5LCU3NQXvYL7hacqYkk8VmYeR02EMOZDL1SThyaIjikPN40r+bPQnE2wy7QKI1qiqKH/OqAdV++cY=
+    secure: XGygEaKHV6wawGjrchVNsgSnRjyNWkWIVaQuxOUepH/W9FFKbTBUWuBBBpZWf6sIRsvw++kn+P2mBlXpu4Zrv2A+0O4N07XDEGua8PLj+vg=
   NuGetApiKey:
-    secure: KssdeN7O5SeV453hRse+HcUimuVEd2BniqSnTKOns2VS8QSXD2vaWO/nKFzWR4DY
+    secure: eH/OCc5Zl3cDP6vfFSMdE+rgYHijh9fkWmldUDfX6qO6t+9QZNfneILG0/bsAdm1
 
 install:
   - ps: Install-Module -Name PSScriptAnalyzer -Force
