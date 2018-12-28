@@ -6,7 +6,7 @@ environment:
   appveyor_test_acc_key:
     secure: XGygEaKHV6wawGjrchVNsgSnRjyNWkWIVaQuxOUepH/W9FFKbTBUWuBBBpZWf6sIRsvw++kn+P2mBlXpu4Zrv2A+0O4N07XDEGua8PLj+vg=
   NuGetApiKey:
-    secure: 7eO0Ou3vAoxfY4u9j46Fw9bA/r8t0gSJFooIkkYF1n499aDpIPm5vXUmlfb4xO2s
+    secure: eH/OCc5Zl3cDP6vfFSMdE+rgYHijh9fkWmldUDfX6qO6t+9QZNfneILG0/bsAdm1
 
 install:
   - ps: Install-Module -Name PSScriptAnalyzer -Force
