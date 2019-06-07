@@ -21,10 +21,7 @@ This is a community-supported PowerShell module, free and open sourced; subject 
 
 ```PowerShell
 # Download and install remotely from PowerShell Gallery
-Save-Module -Name SumoLogic-Core -Path <path> # Save locally
-Install-Module -Name SumoLogic-Core # Install to module repository, may need root/administrator privilege
-# Alternatively, from local github clone
-Import-Module $repo/src/main/SumoLogic-Core
+Install-Module -Name SumoLogic-Core
 ```
 
 ### 3. Read help document of cmdlets
