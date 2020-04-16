@@ -3,11 +3,8 @@
 This is a container based on [powershell for .net core / linux container](https://hub.docker.com/r/microsoft/powershell/) that has the [sumologic powershell sdk](https://github.com/SumoLogic/sumo-powershell-sdk) pre loaded.
 
 # Making a session
-If you set SUMO_SESSION to ```true``` on startup the container will iniate a session env vars:
+If you set SUMO_SESSION to ```true``` on startup the container will iniate a session using env vars:
 - SUMO_DEPLOYMENT (see https://help.sumologic.com/APIs/General-API-Information/Sumo-Logic-Endpoints-and-Firewall-Security). This is converted into the SUMOLOGIC_API_ENDPOINT
-
-## credentials:
-https://github.com/SumoLogic/sumo-powershell-sdk#4-start-to-use-cmdlets
 - SUMO_ACCESS_ID
 - SUMO_ACCESS_KEY
 
@@ -40,4 +37,9 @@ docker run --env SUMO_DEPLOYMENT=AU --env SUMO_ACCESS_ID=$SUMO_ACCESS_ID --env S
 # Running the demo.ps1 script
 ```
 docker run --env SUMO_SESSION=true --env SUMO_DEPLOYMENT=AU --env SUMO_ACCESS_ID=$SUMO_ACCESS_ID --env SUMO_ACCESS_KEY=$SUMO_ACCESS_KEY --entrypoint pwsh  sumologic-powershell-sdk:latest -File /home/demo.ps1
+```
+
+# Running a command on container launch
+```
+docker run --env SUMO_SESSION=true --env SUMO_DEPLOYMENT=AU --env SUMO_ACCESS_ID=$SUMO_ACCESS_ID --env SUMO_ACCESS_KEY=$SUMO_ACCESS_KEY -it --entrypoint pwsh sumologic-powershell-sdk:latest -c "get-collector -limit 10 -offset 0"
 ```
